@@ -2458,13 +2458,6 @@
       margin-bottom: 16px;
     }
 
-    .rw-compare-section {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-    }
-
     .rw-compare-header {
       display: flex;
       align-items: center;
@@ -2627,6 +2620,7 @@
       }
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body>
@@ -3270,102 +3264,49 @@
       <!-- STEP 7: GENERATE & COMPARE -->
       <div class="rw-panel" id="rw-step-7">
         <div class="rw-panel-header">
-          <h2>🚀 Generate &amp; Compare</h2>
-          <p>Download your resume then benchmark against real hiring data</p>
+          <h2>🚀 Generate Your Resume</h2>
+          <p>Download your professional college-branded resume as a PDF</p>
         </div>
 
+        <!-- TEMPLATE REMINDER -->
         <div class="rw-action-card">
-          <div class="rw-action-icon">📄</div>
+          <div class="rw-action-icon">🎨</div>
           <div class="rw-action-content">
-            <h3>Generate Your Resume</h3>
-            <p>Template: <strong id="rw-chosen-template">Classic</strong> · College-branded PDF</p>
-            <p style="font-size:12px;color:var(--text2);margin-top:6px;">⚠️ PDF generation requires the Python backend.
-              Copy your data using the button below to generate it separately, or contact your admin.</p>
-          </div>
-          <button class="btn btn-primary" id="rw-gen-btn" onclick="rwCopyResumeData()">📋 Copy Resume Data</button>
-        </div>
-        <div id="rw-copy-success" class="rw-success-banner hidden">✅ Resume data copied to clipboard! Paste it into your
-          resume tool.</div>
-
-        <!-- AI COMPARISON -->
-        <div class="rw-compare-section">
-          <div class="rw-compare-header">
-            <h3>🔍 AI Resume Comparison</h3>
-            <div class="rw-ai-badge">⚡ Powered by Gemini AI</div>
-          </div>
-          <p style="color:var(--text2);font-size:14px;margin-bottom:18px;">Tell us your target company and package. Our
-            AI benchmarks your resume against real hiring patterns of candidates who've cracked similar roles.</p>
-          <div class="rw-form-grid">
-            <div class="rw-field">
-              <label>Target Company</label>
-              <select id="rw-target-company" class="rw-input">
-                <option value="">Select company...</option>
-                <option>Google</option>
-                <option>Microsoft</option>
-                <option>Amazon</option>
-                <option>Flipkart</option>
-                <option>Zomato</option>
-                <option>Swiggy</option>
-                <option>Paytm</option>
-                <option>Infosys</option>
-                <option>TCS</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div class="rw-field">
-              <label>Target Role</label>
-              <input type="text" id="rw-cmp-role" placeholder="Software Development Engineer" class="rw-input">
-            </div>
-            <div class="rw-field">
-              <label>Expected Package</label>
-              <select id="rw-target-pkg" class="rw-input">
-                <option value="">Select range...</option>
-                <option>5-10 LPA</option>
-                <option>10-20 LPA</option>
-                <option>20-35 LPA</option>
-                <option>35-50 LPA</option>
-                <option>50+ LPA</option>
-              </select>
-            </div>
-          </div>
-          <button class="btn btn-primary" id="rw-compare-btn" onclick="rwCompareResume()" style="margin-top:8px;">🔍
-            Compare with AI Benchmark</button>
-          <div id="rw-compare-loading" class="rw-loading hidden">
-            <div class="rw-spinner"></div>
-            <p>AI is analyzing real hiring patterns...</p>
-          </div>
-          <div id="rw-compare-results" class="hidden">
-            <div class="rw-results-header">
-              <h3>Your Comparison Results</h3>
-              <div class="rw-match-circle"><span id="rw-match-score">0</span><span class="rw-match-label">Match %</span>
-              </div>
-            </div>
-            <div class="rw-benchmark-box">
-              <h4>📊 Benchmark Profile</h4>
-              <div id="rw-benchmark-content"></div>
-            </div>
-            <div class="rw-results-grid">
-              <div class="rw-col rw-strengths">
-                <h4>✅ Your Strengths</h4>
-                <ul id="rw-strengths-list"></ul>
-              </div>
-              <div class="rw-col rw-gaps">
-                <h4>⚠️ Gaps to Bridge</h4>
-                <ul id="rw-gaps-list"></ul>
-              </div>
-            </div>
-            <div class="rw-action-items">
-              <h4>🎯 Your Action Plan</h4>
-              <ol id="rw-action-list"></ol>
-            </div>
-            <div class="rw-verdict">
-              <h4>🤖 AI Verdict</h4>
-              <p id="rw-verdict-text"></p>
-            </div>
+            <h3>Selected Template: <span id="rw-chosen-template">Classic</span></h3>
+            <p style="color:var(--text2);font-size:13px;margin-top:4px;">Your resume will be generated with all the
+              details you filled in the previous steps.</p>
           </div>
         </div>
 
-        <div class="rw-actions">
+        <!-- GENERATE BUTTON -->
+        <div style="text-align:center;margin:28px 0 16px;">
+          <button class="btn btn-primary" id="rw-gen-btn" onclick="rwGeneratePDF()"
+            style="font-size:16px;padding:14px 40px;border-radius:14px;">
+            ⬇ Download Resume as PDF
+          </button>
+        </div>
+        <div id="rw-gen-error" class="hidden"
+          style="background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.3);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--danger);margin-bottom:16px;text-align:center;">
+        </div>
+
+        <!-- TIPS -->
+        <div
+          style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-top:8px;">
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;">💡 Tips for a strong resume
+          </div>
+          <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:7px;">
+            <li style="font-size:12px;color:var(--text2);">✅ Make sure your CGPA, 10th & 12th marks are filled in Step 2
+            </li>
+            <li style="font-size:12px;color:var(--text2);">✅ Add at least 2 projects with descriptions for a stronger
+              resume</li>
+            <li style="font-size:12px;color:var(--text2);">✅ Include your LinkedIn & GitHub links for recruiter
+              visibility</li>
+            <li style="font-size:12px;color:var(--text2);">✅ List skills separated by commas — e.g. Python, Java, React
+            </li>
+          </ul>
+        </div>
+
+        <div class="rw-actions" style="margin-top:28px;">
           <button class="btn btn-outline" onclick="rwNext(6)">← Back</button>
           <button class="btn btn-primary" onclick="go('feed')">View Eligible Drives →</button>
         </div>
@@ -4354,61 +4295,410 @@
         else { gridEl.innerHTML = courses.map(c => `<a href="${c.url}" target="_blank" class="rw-course-card"><div class="rw-course-badge">${c.platform}</div><div class="rw-course-title">${c.title}</div><div class="rw-course-meta">⭐ ${c.rating} · ⏱ ${c.duration}${c.market_pct ? ` · 🔥 ${c.market_pct}% demand` : ''}</div><div class="rw-course-reason">${c.reason}</div><div class="rw-course-cta">View Course →</div></a>`).join(''); }
       }
 
-      function rwCopyResumeData() {
+      function rwGeneratePDF() {
         const data = rwCollectData();
-        const text = JSON.stringify(data, null, 2);
-        navigator.clipboard.writeText(text).then(() => {
-          document.getElementById('rw-copy-success').classList.remove('hidden');
-          toast('Copied!', 'Resume data copied to clipboard', 's');
-          setTimeout(() => document.getElementById('rw-copy-success').classList.add('hidden'), 4000);
-        }).catch(() => toast('Error', 'Could not copy to clipboard', 'e'));
-      }
+        if (!data.name) { toast('Missing Info', 'Please fill your name in Step 1 first', 'e'); return; }
 
-      async function rwCompareResume() {
-        const company = document.getElementById('rw-target-company').value;
-        const role = document.getElementById('rw-cmp-role').value;
-        const pkg = document.getElementById('rw-target-pkg').value;
-        if (!company || !role || !pkg) { toast('Required', 'Please fill in company, role and package', 'e'); return; }
-        const data = rwCollectData();
-        if (!data.name) { toast('Required', 'Please fill your name in Step 1 first', 'e'); return; }
-
-        document.getElementById('rw-compare-results').classList.add('hidden');
-        document.getElementById('rw-compare-loading').classList.remove('hidden');
-        document.getElementById('rw-compare-btn').disabled = true;
+        const btn = document.getElementById('rw-gen-btn');
+        const errEl = document.getElementById('rw-gen-error');
+        btn.disabled = true;
+        btn.textContent = '⏳ Generating PDF...';
+        errEl.classList.add('hidden');
 
         try {
-          const res = await api('POST', '/api/resume/compare', {
-            resume_data: { name: data.name, cgpa: data.education.cgpa, skills: data.skills, projects: data.projects, internships: data.internships, achievements: data.achievements },
-            company, role, package: pkg
-          });
-          if (res.success) { rwDisplayComparison(res.comparison); }
-          else throw new Error(res.error || 'AI comparison failed');
-        } catch (e) {
-          toast('AI Error', e.message, 'e');
-        } finally {
-          document.getElementById('rw-compare-loading').classList.add('hidden');
-          document.getElementById('rw-compare-btn').disabled = false;
-        }
-      }
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+          const W = 210; const H = 297;
+          const edu = data.education;
+          const template = rwSelectedTemplate;
 
-      function rwDisplayComparison(data) {
-        const score = data.match_score || 0;
-        document.getElementById('rw-match-score').textContent = score;
-        const circle = document.querySelector('.rw-match-circle');
-        circle.style.background = score >= 75 ? 'linear-gradient(135deg,#22c55e,#16a34a)' : score >= 50 ? 'linear-gradient(135deg,#f59e0b,#d97706)' : 'linear-gradient(135deg,#f43f5e,#e11d48)';
-        const bench = data.benchmark || {};
-        document.getElementById('rw-benchmark-content').innerHTML = `<p style="font-size:13px;color:var(--text2);line-height:1.6;">${bench.summary || ''}</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-            <span style="font-size:12px;background:var(--surface3);padding:3px 10px;border-radius:20px;"><strong>CGPA:</strong> ${bench.cgpa || 'N/A'}</span>
-            <span style="font-size:12px;background:var(--surface3);padding:3px 10px;border-radius:20px;"><strong>Projects:</strong> ${bench.projects_count || 'N/A'}</span>
-            <span style="font-size:12px;background:var(--surface3);padding:3px 10px;border-radius:20px;"><strong>Internships:</strong> ${bench.internships || 'N/A'}</span>
-          </div>${bench.key_skills ? `<div style="margin-top:8px;">${bench.key_skills.map(s => `<span style="font-size:11px;background:var(--surface3);padding:2px 8px;border-radius:6px;margin:2px;display:inline-block;">${s}</span>`).join('')}</div>` : ''}`;
-        document.getElementById('rw-strengths-list').innerHTML = (data.strengths || []).map(s => `<li>${s}</li>`).join('');
-        document.getElementById('rw-gaps-list').innerHTML = (data.gaps || []).map(g => `<li>${g}</li>`).join('');
-        document.getElementById('rw-action-list').innerHTML = (data.action_items || []).map(a => `<li>${a}</li>`).join('');
-        document.getElementById('rw-verdict-text').textContent = data.verdict || '';
-        document.getElementById('rw-compare-results').classList.remove('hidden');
-        document.getElementById('rw-compare-results').scrollIntoView({ behavior: 'smooth' });
+          // ── helpers ──
+          const lh = (size) => size * 0.45; // line height in mm
+          const wrap = (doc, text, x, maxW) => doc.splitTextToSize(text || '', maxW);
+
+          if (template === 'modern') {
+            // ── MODERN BLUE ──
+            // Header block
+            doc.setFillColor(26, 35, 126);
+            doc.rect(0, 0, W, 38, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+            doc.text('VIDYAVARDHAKA COLLEGE OF ENGINEERING', W / 2, 10, { align: 'center' });
+            doc.setFontSize(20); doc.setFont('helvetica', 'bold');
+            doc.text((data.name || '').toUpperCase(), W / 2, 20, { align: 'center' });
+            doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+            doc.text(data.objective_role || '', W / 2, 27, { align: 'center' });
+            const contacts = [data.email, data.phone, data.linkedin, data.github].filter(Boolean).join('  |  ');
+            doc.setFontSize(7.5);
+            doc.text(contacts, W / 2, 34, { align: 'center' });
+
+            doc.setTextColor(0, 0, 0);
+            let y = 46;
+            const margin = 15;
+            const contentW = W - margin * 2;
+
+            const modernSection = (title) => {
+              doc.setFontSize(10); doc.setFont('helvetica', 'bold');
+              doc.setTextColor(26, 35, 126);
+              doc.text(title, margin, y); y += 1.5;
+              doc.setDrawColor(26, 35, 126); doc.setLineWidth(0.4);
+              doc.line(margin, y, W - margin, y); y += 4;
+              doc.setTextColor(0, 0, 0);
+            };
+
+            const checkPage = (needed = 8) => { if (y + needed > H - 12) { doc.addPage(); y = 15; } };
+
+            // Summary
+            if (data.summary) {
+              modernSection('SUMMARY');
+              doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+              const lines = wrap(doc, data.summary, margin, contentW);
+              lines.forEach(l => { checkPage(); doc.text(l, margin, y); y += 5; });
+              y += 2;
+            }
+
+            // Education
+            modernSection('EDUCATION');
+            doc.setFontSize(9.5); doc.setFont('helvetica', 'bold');
+            doc.text(edu.college || '', margin, y);
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5);
+            doc.text(`CGPA: ${edu.cgpa || ''}`, W - margin, y, { align: 'right' }); y += 5;
+            doc.text(`${edu.degree || ''} | ${edu.year || ''}`, margin, y); y += 4;
+            if (edu.puc_school) { doc.setFont('helvetica', 'bold'); doc.text(edu.puc_school, margin, y); doc.setFont('helvetica', 'normal'); doc.text(`12th: ${edu.twelfth || ''}%`, W - margin, y, { align: 'right' }); y += 5; }
+            if (edu.school) { doc.setFont('helvetica', 'bold'); doc.text(edu.school, margin, y); doc.setFont('helvetica', 'normal'); doc.text(`10th: ${edu.tenth || ''}%`, W - margin, y, { align: 'right' }); y += 5; }
+            y += 2;
+
+            // Skills
+            if (data.skills.length) {
+              checkPage(10); modernSection('TECHNICAL SKILLS');
+              doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+              const skillText = data.skills.join(' • ');
+              wrap(doc, skillText, margin, contentW).forEach(l => { checkPage(); doc.text(l, margin, y); y += 5; });
+              y += 2;
+            }
+
+            // Projects
+            if (data.projects.length) {
+              checkPage(12); modernSection('PROJECTS');
+              data.projects.forEach(p => {
+                checkPage(10);
+                doc.setFontSize(9.5); doc.setFont('helvetica', 'bold');
+                doc.text(`${p.title}${p.tech ? '  |  ' + p.tech : ''}`, margin, y);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+                doc.text(p.status === 'ongoing' ? 'In Progress' : 'Completed', W - margin, y, { align: 'right' }); y += 4.5;
+                if (p.link) { doc.setTextColor(26, 35, 126); doc.text(p.link, margin, y); doc.setTextColor(0, 0, 0); y += 4; }
+                if (p.description) {
+                  p.description.split('\n').filter(Boolean).forEach(pt => {
+                    checkPage(); doc.setFontSize(8.5);
+                    wrap(doc, `• ${pt.trim()}`, margin + 2, contentW - 2).forEach(l => { doc.text(l, margin + 2, y); y += 4.5; });
+                  });
+                }
+                y += 2;
+              });
+            }
+
+            // Internships
+            if (data.internships.length) {
+              checkPage(12); modernSection('INTERNSHIPS & EXPERIENCE');
+              data.internships.forEach(i => {
+                checkPage(8);
+                doc.setFontSize(9.5); doc.setFont('helvetica', 'bold');
+                doc.text(`${i.role}${i.company ? ' – ' + i.company : ''}`, margin, y);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+                doc.text(i.duration || '', W - margin, y, { align: 'right' }); y += 5;
+                if (i.description) {
+                  i.description.split('\n').filter(Boolean).forEach(pt => {
+                    checkPage(); doc.setFontSize(8.5);
+                    wrap(doc, `• ${pt.trim()}`, margin + 2, contentW - 2).forEach(l => { doc.text(l, margin + 2, y); y += 4.5; });
+                  });
+                }
+                y += 2;
+              });
+            }
+
+            // Achievements
+            if (data.achievements.length) {
+              checkPage(10); modernSection('ACHIEVEMENTS & CERTIFICATIONS');
+              doc.setFontSize(8.5); doc.setFont('helvetica', 'normal');
+              data.achievements.forEach(a => { checkPage(); wrap(doc, `• ${a}`, margin + 2, contentW - 2).forEach(l => { doc.text(l, margin + 2, y); y += 4.5; }); });
+            }
+
+          } else if (template === 'sidebar') {
+            // ── DARK SIDEBAR ──
+            const sbW = 62;
+            doc.setFillColor(15, 23, 42); doc.rect(0, 0, sbW, H, 'F');
+            doc.setFillColor(26, 35, 60); doc.rect(0, 0, sbW, 40, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14); doc.setFont('helvetica', 'bold');
+            const nameLines = doc.splitTextToSize((data.name || '').toUpperCase(), sbW - 10);
+            let sy = 14;
+            nameLines.forEach(l => { doc.text(l, sbW / 2, sy, { align: 'center' }); sy += 7; });
+            doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+            doc.setTextColor(6, 182, 212);
+            doc.text(data.objective_role || '', sbW / 2, sy + 1, { align: 'center' });
+
+            // Sidebar sections
+            const sbSection = (title, startY) => {
+              doc.setFontSize(7.5); doc.setFont('helvetica', 'bold');
+              doc.setTextColor(6, 182, 212);
+              doc.text(title.toUpperCase(), 6, startY);
+              doc.setDrawColor(6, 182, 212); doc.setLineWidth(0.3);
+              doc.line(6, startY + 1.5, sbW - 6, startY + 1.5);
+              return startY + 6;
+            };
+
+            let sbY = 47;
+            // Contact
+            sbY = sbSection('Contact', sbY);
+            doc.setFontSize(7.5); doc.setFont('helvetica', 'normal'); doc.setTextColor(203, 213, 225);
+            [data.email, data.phone, data.linkedin, data.github].filter(Boolean).forEach(c => {
+              doc.splitTextToSize(c, sbW - 12).forEach(l => { doc.text(l, 6, sbY); sbY += 4; });
+              sbY += 1;
+            });
+            sbY += 3;
+
+            // Skills
+            if (data.skills.length) {
+              sbY = sbSection('Skills', sbY);
+              doc.setFontSize(7.5); doc.setTextColor(203, 213, 225);
+              data.skills.slice(0, 14).forEach(s => { doc.text(`• ${s}`, 6, sbY); sbY += 4.2; });
+              sbY += 3;
+            }
+
+            // Education brief
+            sbY = sbSection('Education', sbY);
+            doc.setFontSize(7.5); doc.setTextColor(203, 213, 225);
+            doc.setFont('helvetica', 'bold'); doc.text(edu.college || '', 6, sbY); sbY += 4;
+            doc.setFont('helvetica', 'normal');
+            doc.splitTextToSize(edu.degree || '', sbW - 12).forEach(l => { doc.text(l, 6, sbY); sbY += 3.8; });
+            doc.text(`CGPA: ${edu.cgpa || ''}`, 6, sbY); sbY += 4;
+
+            // Main content
+            const mx = sbW + 8; const mW = W - mx - 8;
+            doc.setTextColor(0, 0, 0);
+            let my = 12;
+
+            const mainSection = (title) => {
+              if (my > H - 15) { doc.addPage(); doc.setFillColor(15, 23, 42); doc.rect(0, 0, sbW, H, 'F'); my = 12; }
+              doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(15, 23, 42);
+              doc.text(title, mx, my); my += 2;
+              doc.setDrawColor(6, 182, 212); doc.setLineWidth(0.5);
+              doc.line(mx, my, W - 8, my); my += 5;
+              doc.setTextColor(30, 30, 30);
+            };
+
+            const checkM = (needed = 8) => {
+              if (my + needed > H - 12) {
+                doc.addPage();
+                doc.setFillColor(15, 23, 42); doc.rect(0, 0, sbW, H, 'F');
+                my = 12;
+              }
+            };
+
+            if (data.summary) {
+              mainSection('Summary');
+              doc.setFontSize(8.5); doc.setFont('helvetica', 'normal');
+              wrap(doc, data.summary, mx, mW).forEach(l => { checkM(); doc.text(l, mx, my); my += 4.5; });
+              my += 3;
+            }
+
+            if (data.projects.length) {
+              mainSection('Projects');
+              data.projects.forEach(p => {
+                checkM(8);
+                doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+                doc.text(p.title, mx, my);
+                if (p.tech) { doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(80, 80, 80); doc.text(p.tech, W - 8, my, { align: 'right' }); doc.setTextColor(30, 30, 30); }
+                my += 4.5;
+                if (p.description) {
+                  doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+                  p.description.split('\n').filter(Boolean).forEach(pt => { checkM(); wrap(doc, `• ${pt.trim()}`, mx + 2, mW - 2).forEach(l => { doc.text(l, mx + 2, my); my += 4; }); });
+                }
+                my += 2;
+              });
+            }
+
+            if (data.internships.length) {
+              mainSection('Experience');
+              data.internships.forEach(i => {
+                checkM(8);
+                doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+                doc.text(`${i.role}${i.company ? ' – ' + i.company : ''}`, mx, my);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(80, 80, 80);
+                doc.text(i.duration || '', W - 8, my, { align: 'right' }); doc.setTextColor(30, 30, 30); my += 4.5;
+                if (i.description) {
+                  doc.setFontSize(8);
+                  i.description.split('\n').filter(Boolean).forEach(pt => { checkM(); wrap(doc, `• ${pt.trim()}`, mx + 2, mW - 2).forEach(l => { doc.text(l, mx + 2, my); my += 4; }); });
+                }
+                my += 2;
+              });
+            }
+
+            if (data.achievements.length) {
+              mainSection('Achievements');
+              doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+              data.achievements.forEach(a => { checkM(); wrap(doc, `• ${a}`, mx + 2, mW - 2).forEach(l => { doc.text(l, mx + 2, my); my += 4.5; }); });
+            }
+
+          } else {
+            // ── CLASSIC (default) ──
+            const margin = 14; const contentW = W - margin * 2;
+            doc.setTextColor(0, 0, 0);
+
+            // Name
+            doc.setFontSize(18); doc.setFont('helvetica', 'bold');
+            doc.text((data.name || '').toUpperCase(), W / 2, 18, { align: 'center' });
+
+            // Role
+            if (data.objective_role) {
+              doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(80, 80, 80);
+              doc.text(data.objective_role, W / 2, 24, { align: 'center' });
+              doc.setTextColor(0, 0, 0);
+            }
+
+            // Contact line
+            const contactParts = [data.city || edu.city, data.email, data.phone, data.linkedin, data.github].filter(Boolean);
+            doc.setFontSize(7.5);
+            doc.text(contactParts.join('  |  '), W / 2, 30, { align: 'center' });
+
+            // Top divider
+            doc.setDrawColor(0); doc.setLineWidth(0.6);
+            doc.line(margin, 33, W - margin, 33);
+
+            let y = 40;
+            const checkPage = (needed = 8) => { if (y + needed > H - 12) { doc.addPage(); y = 15; } };
+
+            const classicSection = (title) => {
+              checkPage(10);
+              doc.setFontSize(9.5); doc.setFont('helvetica', 'bold'); doc.setTextColor(0, 0, 0);
+              doc.setFillColor(230, 230, 230); doc.rect(margin, y - 4.5, contentW, 6.5, 'F');
+              doc.text(title.toUpperCase(), margin + 2, y); y += 4.5;
+              doc.setFont('helvetica', 'normal');
+            };
+
+            // Summary
+            if (data.summary) {
+              classicSection('Summary');
+              doc.setFontSize(9);
+              wrap(doc, data.summary, margin, contentW).forEach(l => { checkPage(); doc.text(l, margin, y); y += 4.8; });
+              y += 2;
+            }
+
+            // Education
+            classicSection('Education');
+            doc.setFontSize(9.5); doc.setFont('helvetica', 'bold');
+            doc.text(edu.college || '', margin, y);
+            doc.text(`CGPA: ${edu.cgpa || ''}`, W - margin, y, { align: 'right' }); y += 5;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+            doc.text(`${edu.degree || ''}  |  Sem: ${edu.sem || ''}  |  ${edu.year || ''}`, margin, y); y += 5;
+            if (edu.puc_school) {
+              doc.setFont('helvetica', 'bold'); doc.text(edu.puc_school, margin, y);
+              doc.text(`12th (${edu.puc_stream || ''}): ${edu.twelfth || ''}%`, W - margin, y, { align: 'right' }); y += 5;
+            }
+            if (edu.school) {
+              doc.setFont('helvetica', 'bold'); doc.text(edu.school, margin, y);
+              doc.text(`10th: ${edu.tenth || ''}%`, W - margin, y, { align: 'right' }); y += 5;
+            }
+            doc.setFont('helvetica', 'normal'); y += 2;
+
+            // Skills (4-col layout)
+            const langs = document.getElementById('rw-langs')?.value.trim();
+            const frameworks = document.getElementById('rw-frameworks')?.value.trim();
+            const tools = document.getElementById('rw-tools')?.value.trim();
+            const dbs = document.getElementById('rw-dbs')?.value.trim();
+            const languagesKnown = document.getElementById('rw-languages-known')?.value.trim();
+            const interests = document.getElementById('rw-interests')?.value.trim();
+            const completedProjs = document.getElementById('rw-completed-projects')?.value.trim();
+
+            if (langs || languagesKnown || interests || completedProjs) {
+              checkPage(22);
+              const cols = [
+                { title: 'Languages Known', items: (languagesKnown || '').split(',').map(s => s.trim()).filter(Boolean) },
+                { title: 'Interests', items: (interests || '').split(',').map(s => s.trim()).filter(Boolean) },
+                { title: 'Tech Skills', items: (langs || '').split(',').map(s => s.trim()).filter(Boolean).slice(0, 6) },
+                { title: 'Projects', items: (completedProjs || '').split(',').map(s => s.trim()).filter(Boolean).slice(0, 4) },
+              ];
+              const colW = contentW / 4;
+              doc.setDrawColor(180, 180, 180); doc.setLineWidth(0.3);
+              doc.rect(margin, y - 1, contentW, Math.max(...cols.map(c => c.items.length)) * 4.5 + 10, 'S');
+              cols.forEach((col, ci) => {
+                let cy = y + 2;
+                doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+                doc.text(col.title, margin + ci * colW + 2, cy); cy += 5;
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+                col.items.forEach(item => { doc.text(`• ${item}`, margin + ci * colW + 2, cy); cy += 4.5; });
+              });
+              y += Math.max(...cols.map(c => c.items.length)) * 4.5 + 14;
+            }
+
+            // Full skills block
+            if (data.skills.length) {
+              classicSection('Technical Skills');
+              doc.setFontSize(9);
+              if (langs) { doc.setFont('helvetica', 'bold'); doc.text('Languages: ', margin, y); doc.setFont('helvetica', 'normal'); doc.text(langs, margin + 24, y); y += 5; }
+              if (frameworks) { doc.setFont('helvetica', 'bold'); doc.text('Frameworks: ', margin, y); doc.setFont('helvetica', 'normal'); doc.text(frameworks, margin + 26, y); y += 5; }
+              if (tools) { doc.setFont('helvetica', 'bold'); doc.text('Tools: ', margin, y); doc.setFont('helvetica', 'normal'); doc.text(tools, margin + 14, y); y += 5; }
+              if (dbs) { doc.setFont('helvetica', 'bold'); doc.text('Databases: ', margin, y); doc.setFont('helvetica', 'normal'); doc.text(dbs, margin + 23, y); y += 5; }
+              y += 2;
+            }
+
+            // Projects
+            if (data.projects.length) {
+              classicSection('Projects');
+              data.projects.forEach(p => {
+                checkPage(10);
+                doc.setFontSize(9.5); doc.setFont('helvetica', 'bold');
+                doc.text(`• ${p.title}${p.tech ? '  |  ' + p.tech : ''}`, margin, y);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+                doc.setTextColor(80, 80, 80); doc.text(p.status === 'ongoing' ? '[Ongoing]' : '[Completed]', W - margin, y, { align: 'right' }); doc.setTextColor(0, 0, 0);
+                y += 5;
+                if (p.link) { doc.setFontSize(8); doc.setTextColor(26, 35, 126); doc.text(`  Link: ${p.link}`, margin + 3, y); doc.setTextColor(0, 0, 0); y += 4; }
+                if (p.description) {
+                  doc.setFontSize(8.5);
+                  p.description.split('\n').filter(Boolean).forEach(pt => { checkPage(); wrap(doc, `  – ${pt.trim()}`, margin + 3, contentW - 3).forEach(l => { doc.text(l, margin + 3, y); y += 4.5; }); });
+                }
+                y += 2;
+              });
+            }
+
+            // Internships
+            if (data.internships.length) {
+              classicSection('Internships & Experience');
+              data.internships.forEach(i => {
+                checkPage(8);
+                doc.setFontSize(9.5); doc.setFont('helvetica', 'bold');
+                doc.text(`• ${i.role}${i.company ? ' – ' + i.company : ''}`, margin, y);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(80, 80, 80);
+                doc.text(i.duration || '', W - margin, y, { align: 'right' }); doc.setTextColor(0, 0, 0); y += 5;
+                if (i.description) {
+                  doc.setFontSize(8.5);
+                  i.description.split('\n').filter(Boolean).forEach(pt => { checkPage(); wrap(doc, `  – ${pt.trim()}`, margin + 3, contentW - 3).forEach(l => { doc.text(l, margin + 3, y); y += 4.5; }); });
+                }
+                y += 2;
+              });
+            }
+
+            // Achievements
+            if (data.achievements.length) {
+              classicSection('Achievements & Certifications');
+              doc.setFontSize(9);
+              data.achievements.forEach(a => { checkPage(); wrap(doc, `• ${a}`, margin, contentW).forEach(l => { doc.text(l, margin, y); y += 4.8; }); });
+            }
+          }
+
+          // Save
+          const filename = `${(data.name || 'Resume').replace(/\s+/g, '_')}_Resume.pdf`;
+          doc.save(filename);
+          toast('Downloaded!', `${filename} saved successfully`, 's');
+          btn.textContent = '✅ Downloaded!';
+          setTimeout(() => { btn.textContent = '⬇ Download Resume as PDF'; btn.disabled = false; }, 3000);
+        } catch (e) {
+          console.error('PDF error:', e);
+          errEl.textContent = '❌ PDF generation failed: ' + e.message + '. Please try again.';
+          errEl.classList.remove('hidden');
+          btn.textContent = '⬇ Download Resume as PDF';
+          btn.disabled = false;
+        }
       }
 
       // Expose Resume Wizard functions globally so onclick attributes can call them
@@ -4421,8 +4711,7 @@
       window.rwAddInternship = rwAddInternship;
       window.rwRemoveInternship = rwRemoveInternship;
       window.rwLoadDashboard = rwLoadDashboard;
-      window.rwCopyResumeData = rwCopyResumeData;
-      window.rwCompareResume = rwCompareResume;
+      window.rwGeneratePDF = rwGeneratePDF;
 
     })();
   </script>
