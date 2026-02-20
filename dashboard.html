@@ -935,8 +935,20 @@ function showOverlay(id) {
       sel.innerHTML = '<option value="">None</option>' + (drives.map ? drives.map(d => `<option value="${d._id}">${d.companyName}</option>`).join('') : '');
     });
   }
+  if (id === 'ai-quiz-overlay') {
+    api('GET', '/api/drives').then(drives => {
+      const sel = document.getElementById('ai-drive');
+      sel.innerHTML = '<option value="">None</option>' + (drives.map ? drives.map(d => `<option value="${d._id}">${d.companyName}</option>`).join('') : '');
+    });
+    generatedQuestions = [];
+    document.getElementById('ai-preview-wrap').style.display = 'none';
+    document.getElementById('ai-save-btn').style.display = 'none';
+    document.getElementById('ai-subtopics-wrap').innerHTML = '';
+    document.querySelectorAll('#ai-categories input').forEach(i => { i.checked = false; i.closest('.check-chip').classList.remove('on'); });
+  }
 }
 function closeOverlay(id) { document.getElementById(id).classList.remove('show'); }
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('show'); }));
 document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('show'); }));
 
 // ═══════════ LOGOUT ═══════════
@@ -1479,23 +1491,6 @@ async function saveAIAssessment() {
     document.getElementById('ai-save-btn').style.display = 'none';
     loadAssessments();
   } else toast('Error', res.error, 'e');
-}
-
-// Override showOverlay to load drives into AI overlay too
-const _origShowOverlay = showOverlay;
-function showOverlay(id) {
-  _origShowOverlay(id);
-  if (id === 'ai-quiz-overlay') {
-    api('GET', '/api/drives').then(drives => {
-      const sel = document.getElementById('ai-drive');
-      sel.innerHTML = '<option value="">None</option>' + (drives.map ? drives.map(d => `<option value="${d._id}">${d.companyName}</option>`).join('') : '');
-    });
-    generatedQuestions = [];
-    document.getElementById('ai-preview-wrap').style.display = 'none';
-    document.getElementById('ai-save-btn').style.display = 'none';
-    document.getElementById('ai-subtopics-wrap').innerHTML = '';
-    document.querySelectorAll('#ai-categories input').forEach(i => { i.checked = false; i.closest('.check-chip').classList.remove('on'); });
-  }
 }
 
 // ═══════════ ASSIGNMENT MONITOR ═══════════
