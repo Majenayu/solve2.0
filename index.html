@@ -742,8 +742,10 @@ async function doLogin() {
       window.location.href = '/dashboard';
       return;
     }
-    window.location.href = '/student';
-    return;
+    if (res.role === 'student') {
+      window.location.href = '/student';
+      return;
+    }
   } else {
     showToast('Login Failed', res.error, 'error');
   }
