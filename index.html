@@ -383,21 +383,24 @@ tbody td:first-child { color: var(--text); font-weight: 500; }
     <div style="text-align:center; margin-bottom:24px;">
       <div style="font-size:42px; margin-bottom:10px;">👋</div>
       <h2 style="font-size:18px; font-weight:700; color:#e8f0fe; margin-bottom:6px;">Welcome to PlacementPro!</h2>
-      <p style="font-size:13px; color:#8da4c8;">Please confirm your name to complete sign-in.</p>
+      <p style="font-size:13px; color:#8da4c8;">Confirm your name, then complete the one-time registration form to access your dashboard.</p>
     </div>
     <div style="margin-bottom:20px;">
       <label style="display:block; font-size:11.5px; color:#8da4c8; font-weight:600; margin-bottom:6px; letter-spacing:0.2px;">Your Full Name</label>
       <input id="google-name-input" type="text" placeholder="Enter your full name"
         style="width:100%; padding:12px 14px; background:#121c30; border:1px solid #1e2d48; border-radius:10px; color:#e8f0fe; font-family:inherit; font-size:14px; outline:none; transition:border-color 0.2s;"
         onfocus="this.style.borderColor='#4f8ef7'" onblur="this.style.borderColor='#1e2d48'"
-        onkeydown="if(event.key==='Enter') confirmGoogleName()">
+        onkeydown="if(event.key==='Enter') handleFormBtnClick()">
       <p style="font-size:11px; color:#3d5a80; margin-top:6px;">This is how you'll appear on your placement profile.</p>
     </div>
-    <button onclick="confirmGoogleName()"
-      style="width:100%; padding:12px; background:linear-gradient(135deg,#4f8ef7,#00d4aa); color:white; border:none; border-radius:10px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:opacity 0.2s;"
+    <a id="google-form-btn"
+      href="https://docs.google.com/forms/d/e/1FAIpQLScBZINZkwDg9jx2hz5TX8X49NrSaTHF5MRB6Q2VECsVz4mJXA/viewform?usp=publish-editor"
+      target="_blank"
+      onclick="handleFormBtnClick(event)"
+      style="display:block; width:100%; padding:12px; background:linear-gradient(135deg,#4f8ef7,#00d4aa); color:white; border:none; border-radius:10px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:opacity 0.2s; text-align:center; text-decoration:none; box-sizing:border-box;"
       onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
-      Continue to Dashboard →
-    </button>
+      &#128203; Open Registration Form
+    </a>
   </div>
 </div>
 
@@ -913,17 +916,18 @@ async function handleGoogleLogin(response) {
   }
 }
 
-async function confirmGoogleName() {
-  const name = document.getElementById('google-name-input').value.trim();
+async function handleFormBtnClick(e) {
+  // Validate name first
+  const nameInput = document.getElementById('google-name-input');
+  const name = nameInput.value.trim();
   if (!name) {
-    document.getElementById('google-name-input').style.borderColor = '#f43f5e';
-    document.getElementById('google-name-input').focus();
+    if (e) e.preventDefault();
+    nameInput.style.borderColor = '#f43f5e';
+    nameInput.focus();
     return;
   }
-  const btn = event.target;
-  btn.textContent = 'Signing in…';
-  btn.disabled = true;
 
+  // Register/update user in DB via Google auth
   try {
     const res = await fetch('/api/auth/google', {
       method: 'POST',
@@ -933,20 +937,33 @@ async function confirmGoogleName() {
     const data = await res.json();
 
     if (!data.success) {
-      btn.textContent = 'Continue to Dashboard →';
-      btn.disabled = false;
+      if (e) e.preventDefault();
       alert(data.error || 'Google login failed');
       return;
     }
 
-    window.location.href = '/student';
+    document.getElementById('google-name-modal').style.display = 'none';
+
+    // Returning student (profile already filled) — skip form, go to dashboard
+    if (!data.needsProfile) {
+      if (e) e.preventDefault();
+      window.location.href = '/student';
+      return;
+    }
+
+    // First-time student: let the link open the form, then show waiting screen
+    showGoogleFormWaiting(data.usn, data.name);
+    // Don't preventDefault — let the <a href> open the form in a new tab
+
   } catch (err) {
     console.error(err);
-    btn.textContent = 'Continue to Dashboard →';
-    btn.disabled = false;
+    if (e) e.preventDefault();
     alert('Google login failed');
   }
 }
+
+// Keep confirmGoogleName as alias (used by Enter key on input)
+async function confirmGoogleName() { handleFormBtnClick(null); }
 
 // ===== NAVIGATION =====
 function showPage(id) {
