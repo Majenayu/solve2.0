@@ -273,7 +273,7 @@ app.post('/api/students/import', upload.single('file'), async (req, res) => {
       let added = 0, skipped = 0;
       for (const s of results) {
         if (!s.usn || !s.name) { skipped++; continue; }
-        await Student.findOneAndUpdate({ usn: s.usn }, s, { upsert: true, new: true });
+        await Student.findOneAndUpdate({ usn: s.usn }, { $set: s }, { upsert: true, new: true });
         added++;
       }
       fs.unlinkSync(req.file.path);
@@ -734,9 +734,10 @@ app.post('/api/form-submit', async (req, res) => {
     };
 
     // Upsert: update existing student if USN already exists, else create new
+    // Use $set so existing doc is updated (not replaced), preventing duplicates
     await Student.findOneAndUpdate(
       { usn: usnUpper },
-      studentData,
+      { $set: studentData },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
