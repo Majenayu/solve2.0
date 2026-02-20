@@ -2671,6 +2671,9 @@
       <div class="nav-item" onclick="go('resume-wizard')" id="nav-resume-wizard">
         <span class="nav-icon">✨</span> Resume Wizard
       </div>
+      <div class="nav-item" onclick="go('courses')" id="nav-courses">
+        <span class="nav-icon">🎓</span> Skill Courses
+      </div>
     </div>
 
     <div class="nav-group">
@@ -2890,6 +2893,330 @@
           <div id="prof-assessments"></div>
         </div>
       </div>
+    </div>
+
+    <!-- COURSES PAGE -->
+    <div class="page" id="page-courses">
+      <style>
+        /* ═══════ COURSES PAGE ═══════ */
+        .courses-filters {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+          margin-bottom: 28px;
+        }
+
+        .cf-btn {
+          padding: 7px 18px;
+          border-radius: 20px;
+          border: 1px solid var(--border);
+          background: var(--surface2);
+          color: var(--text2);
+          font-family: inherit;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.18s;
+          letter-spacing: 0.3px;
+        }
+
+        .cf-btn:hover {
+          border-color: var(--accent);
+          color: var(--accent);
+        }
+
+        .cf-btn.active {
+          background: var(--accent);
+          border-color: var(--accent);
+          color: #fff;
+          box-shadow: 0 3px 14px rgba(79, 142, 247, 0.3);
+        }
+
+        .cf-btn.resume-filter.active {
+          background: linear-gradient(135deg, #f59e0b, #ef4444);
+          border-color: #f59e0b;
+          color: #fff;
+          box-shadow: 0 3px 14px rgba(245, 158, 11, 0.3);
+        }
+
+        .courses-skill-group {
+          margin-bottom: 36px;
+        }
+
+        .courses-skill-title {
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1.4px;
+          color: var(--text3);
+          margin-bottom: 14px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .courses-skill-title::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: var(--border);
+        }
+
+        .courses-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+          gap: 18px;
+        }
+
+        .course-card {
+          background: var(--surface);
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          overflow: hidden;
+          transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+          position: relative;
+          cursor: pointer;
+          text-decoration: none;
+          display: block;
+          color: inherit;
+        }
+
+        .course-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+          border-color: var(--accent);
+        }
+
+        .course-card.resume-booster {
+          border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .course-card.resume-booster:hover {
+          border-color: #f59e0b;
+          box-shadow: 0 16px 48px rgba(245, 158, 11, 0.15);
+        }
+
+        .course-thumb {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 16/9;
+          background: #0d1424;
+          overflow: hidden;
+        }
+
+        .course-thumb img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s;
+        }
+
+        .course-card:hover .course-thumb img {
+          transform: scale(1.04);
+        }
+
+        .course-thumb-overlay {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(0, 0, 0, 0.3);
+          opacity: 0;
+          transition: opacity 0.2s;
+        }
+
+        .course-card:hover .course-thumb-overlay {
+          opacity: 1;
+        }
+
+        .play-btn {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.92);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 18px;
+        }
+
+        .resume-badge-ribbon {
+          position: absolute;
+          top: 10px;
+          right: -2px;
+          background: linear-gradient(135deg, #f59e0b, #ef4444);
+          color: #fff;
+          font-size: 10px;
+          font-weight: 800;
+          padding: 4px 10px 4px 8px;
+          border-radius: 4px 0 0 4px;
+          letter-spacing: 0.4px;
+          box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .course-info {
+          padding: 14px 15px 16px;
+        }
+
+        .course-skill-tag {
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          color: var(--accent2);
+          margin-bottom: 6px;
+        }
+
+        .course-title {
+          font-size: 13.5px;
+          font-weight: 700;
+          line-height: 1.45;
+          color: var(--text);
+          margin-bottom: 8px;
+        }
+
+        .course-meta {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 11px;
+          color: var(--text3);
+        }
+
+        .course-meta .dot {
+          width: 3px;
+          height: 3px;
+          border-radius: 50%;
+          background: var(--text3);
+        }
+
+        .course-yt-label {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          color: #ff4444;
+          font-size: 10.5px;
+          font-weight: 700;
+        }
+
+        .courses-search-bar {
+          position: relative;
+          margin-bottom: 22px;
+        }
+
+        .courses-search-bar input {
+          width: 100%;
+          padding: 11px 16px 11px 42px;
+          background: var(--surface2);
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          color: var(--text);
+          font-family: inherit;
+          font-size: 13.5px;
+          transition: border-color 0.2s;
+        }
+
+        .courses-search-bar input:focus {
+          outline: none;
+          border-color: var(--accent);
+        }
+
+        .courses-search-bar .search-icon {
+          position: absolute;
+          left: 14px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 16px;
+          pointer-events: none;
+        }
+
+        .courses-empty {
+          text-align: center;
+          padding: 60px 20px;
+          color: var(--text3);
+          font-size: 14px;
+        }
+
+        .courses-stats-bar {
+          display: flex;
+          gap: 20px;
+          margin-bottom: 26px;
+          flex-wrap: wrap;
+        }
+
+        .cs-stat {
+          background: var(--surface);
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          padding: 12px 18px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .cs-stat-val {
+          font-size: 22px;
+          font-weight: 800;
+        }
+
+        .cs-stat-lbl {
+          font-size: 11px;
+          color: var(--text2);
+        }
+      </style>
+
+      <!-- Stats bar -->
+      <div class="courses-stats-bar">
+        <div class="cs-stat">
+          <div style="font-size:22px;">📚</div>
+          <div>
+            <div class="cs-stat-val">25</div>
+            <div class="cs-stat-lbl">Total Courses</div>
+          </div>
+        </div>
+        <div class="cs-stat">
+          <div style="font-size:22px;">🔥</div>
+          <div>
+            <div class="cs-stat-val" style="color:var(--warning);">10</div>
+            <div class="cs-stat-lbl">Resume Boosters</div>
+          </div>
+        </div>
+        <div class="cs-stat">
+          <div style="font-size:22px;">🎯</div>
+          <div>
+            <div class="cs-stat-val" style="color:var(--accent2);">9</div>
+            <div class="cs-stat-lbl">Skill Areas</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="courses-search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="courses-search" placeholder="Search courses, skills, topics…" oninput="filterCourses()">
+      </div>
+
+      <!-- Filters -->
+      <div class="courses-filters" id="courses-filters">
+        <button class="cf-btn active" onclick="setCourseFilter('all', this)">All Courses</button>
+        <button class="cf-btn resume-filter" onclick="setCourseFilter('resume', this)">🔥 Resume Boosters</button>
+        <button class="cf-btn" onclick="setCourseFilter('Programming Basics', this)">Programming Basics</button>
+        <button class="cf-btn" onclick="setCourseFilter('DSA', this)">DSA</button>
+        <button class="cf-btn" onclick="setCourseFilter('OOP Concepts', this)">OOP</button>
+        <button class="cf-btn" onclick="setCourseFilter('DBMS Basics', this)">DBMS</button>
+        <button class="cf-btn" onclick="setCourseFilter('Operating Systems', this)">OS</button>
+        <button class="cf-btn" onclick="setCourseFilter('Computer Networks', this)">CN</button>
+        <button class="cf-btn" onclick="setCourseFilter('Git & GitHub', this)">Git</button>
+        <button class="cf-btn" onclick="setCourseFilter('Basic Web Dev', this)">Web Dev</button>
+        <button class="cf-btn" onclick="setCourseFilter('System Design', this)">System Design</button>
+      </div>
+
+      <!-- Course listing -->
+      <div id="courses-listing"></div>
     </div>
 
     <!-- RESUME WIZARD PAGE -->
@@ -3383,7 +3710,8 @@
       assessments: ['Assessments', 'Tests & evaluations'],
       quiz: ['Take Assessment', 'Complete your test'],
       profile: ['My Profile', 'Your academic profile'],
-      'resume-wizard': ['Resume Wizard', 'Build your resume & get AI insights']
+      'resume-wizard': ['Resume Wizard', 'Build your resume & get AI insights'],
+      'courses': ['Skill Courses', 'Learn, grow & boost your placement readiness']
     };
 
     function go(page) {
@@ -3403,6 +3731,7 @@
       if (page === 'assessments') loadAssessments();
       if (page === 'profile') loadProfile();
       if (page === 'resume-wizard') rwInit();
+      if (page === 'courses') { setTimeout(renderCourses, 50); }
       // Close notif panel on nav
       document.getElementById('notif-panel').classList.remove('show');
     }
@@ -4714,6 +5043,150 @@
       window.rwGeneratePDF = rwGeneratePDF;
 
     })();
+  </script>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════
+    // SKILL COURSES DATA
+    // ═══════════════════════════════════════════════════════════
+    const COURSES_DATA = [
+      // Programming Basics
+      { skill: 'Programming Basics', title: 'Python for Beginners – Full Course', url: 'https://www.youtube.com/watch?v=_uQrJ0TkZlc', ytId: '_uQrJ0TkZlc', resumeBooster: true, meta: 'ProgrammingKnowledge' },
+      { skill: 'Programming Basics', title: 'Introduction to Programming', url: 'https://www.youtube.com/watch?v=zOjov-2OZ0E', ytId: 'zOjov-2OZ0E', resumeBooster: false, meta: 'Harvard / freeCodeCamp' },
+      // DSA
+      { skill: 'DSA', title: 'DSA Full Course – Data Structures & Algorithms', url: 'https://www.youtube.com/watch?v=8hly31xKli0', ytId: '8hly31xKli0', resumeBooster: true, meta: 'Full Playlist' },
+      { skill: 'DSA', title: 'Best DSA Playlists on YouTube', url: 'https://www.youtube.com/results?search_query=best+dsa+playlist', ytId: 'a1ZgqFqZK58', resumeBooster: true, meta: 'Multiple Channels' },
+      // OOP Concepts
+      { skill: 'OOP Concepts', title: 'Intro to OOP – Classes & Objects', url: 'https://www.youtube.com/watch?v=e-5obm1G_FY', ytId: 'e-5obm1G_FY', resumeBooster: true, meta: 'Fundamentals' },
+      { skill: 'OOP Concepts', title: 'Java OOP Concepts Playlist', url: 'https://www.youtube.com/watch?v=6T_HgnjoYwM', ytId: '6T_HgnjoYwM', resumeBooster: true, meta: 'Java OOP Full Playlist' },
+      // DBMS Basics
+      { skill: 'DBMS Basics', title: 'SQL & Database Concepts – Full Course', url: 'https://youtu.be/HXV3zeQKqGY?si=qpY8Ns7ed994t0NS', ytId: 'HXV3zeQKqGY', resumeBooster: true, meta: 'freeCodeCamp' },
+      // Operating Systems
+      { skill: 'Operating Systems', title: 'OS Basics Lecture – Gate Smashers', url: 'https://youtu.be/WJ-UaAaumNA?si=Qsot7MmanxjvHLWN', ytId: 'WJ-UaAaumNA', resumeBooster: false, meta: 'Gate Smashers' },
+      // Computer Networks
+      { skill: 'Computer Networks', title: 'Computer Networks Basics – Gate Smashers', url: 'https://youtu.be/JFF2vJaN0Cw?si=jAVz7df41EYG4VaN', ytId: 'JFF2vJaN0Cw', resumeBooster: false, meta: 'Gate Smashers' },
+      // Git & GitHub
+      { skill: 'Git & GitHub', title: 'freeCodeCamp Git & GitHub Full Course', url: 'https://youtu.be/Ez8F0nW6S-w?si=--Bo45R_GHIcyTUy', ytId: 'Ez8F0nW6S-w', resumeBooster: true, meta: 'freeCodeCamp' },
+      // Basic Web Dev
+      { skill: 'Basic Web Dev', title: 'HTML Full Course for Beginners', url: 'https://youtu.be/HcOc7P5BMi4?si=S4CMwTEiXT0n_lVK', ytId: 'HcOc7P5BMi4', resumeBooster: false, meta: 'freeCodeCamp' },
+      { skill: 'Basic Web Dev', title: 'CSS Full Course – Beginner to Pro', url: 'https://youtu.be/kUMe1FH4CHE?si=PhNhyZl_3K1T6ueD', ytId: 'kUMe1FH4CHE', resumeBooster: false, meta: 'freeCodeCamp' },
+      { skill: 'Basic Web Dev', title: 'JavaScript Full Course for Beginners', url: 'https://youtu.be/PkZNo7MFNFg?si=9h0phCxVRdGOVaPv', ytId: 'PkZNo7MFNFg', resumeBooster: false, meta: 'freeCodeCamp' },
+      // Basic Backend
+      { skill: 'Basic Backend', title: 'Flask Full Course – Python Web Dev', url: 'https://www.youtube.com/watch?v=MwZwr5Tvyxo', ytId: 'MwZwr5Tvyxo', resumeBooster: false, meta: 'Code With Josh' },
+      { skill: 'Basic Backend', title: 'REST API Tutorial – Full Guide', url: 'https://youtu.be/XGa4onZP66Q?si=BExVVES40KCpOfT4', ytId: 'XGa4onZP66Q', resumeBooster: false, meta: 'freeCodeCamp' },
+      // System Design
+      { skill: 'System Design', title: 'System Design Introduction', url: 'https://youtu.be/CuQmQpvw04I?si=H8EsTmpWF80HduTu', ytId: 'CuQmQpvw04I', resumeBooster: false, meta: 'System Design Primer' },
+      // Problem-Solving
+      { skill: 'Problem-Solving', title: 'Competitive Programming & Problem Solving', url: 'https://youtu.be/wkxZFLkVBvI?si=vtxDBsOdPHP3o93i', ytId: 'wkxZFLkVBvI', resumeBooster: true, meta: 'Competitive Coding' },
+      // Debugging Skills
+      { skill: 'Debugging Skills', title: 'Debugging Concepts – Full Overview', url: 'https://youtu.be/WHmapcIjCTQ?si=k1SU3WYldmd5f5Xs', ytId: 'WHmapcIjCTQ', resumeBooster: false, meta: 'Dev Skills' },
+      // Clean Code
+      { skill: 'Clean Code Practices', title: 'Clean Code Basics – Best Practices', url: 'https://youtu.be/626BcUO84og?si=SXk8GAhJl04wChEz', ytId: '626BcUO84og', resumeBooster: false, meta: 'Dev Best Practices' },
+      // IDEs / Editors
+      { skill: 'IDEs / Editors', title: 'VS Code Tutorial – Complete Guide', url: 'https://youtu.be/YIqF5STcc0Q?si=BIE0g8YbPlLJ-fBy', ytId: 'YIqF5STcc0Q', resumeBooster: false, meta: 'freeCodeCamp' },
+      // Linux / Command Line
+      { skill: 'Linux / Command Line', title: 'Linux Command Line Tutorial', url: 'https://youtu.be/4FPiPcEhjYw?si=iZqSGrBzGMqHjqOp', ytId: '4FPiPcEhjYw', resumeBooster: false, meta: 'Linux Fundamentals' },
+      // SDLC
+      { skill: 'SDLC', title: 'Software Development Life Cycle Overview', url: 'https://youtu.be/8xYdIZO4bPg?si=8CyR5h6ZtVSTB1CA', ytId: '8xYdIZO4bPg', resumeBooster: false, meta: 'Engineering Concepts' },
+      // Testing Basics
+      { skill: 'Testing Basics', title: 'Software Testing Fundamentals', url: 'https://youtu.be/E2t5XbWwj7I?si=bIf2zgIbwlLcoHcD', ytId: 'E2t5XbWwj7I', resumeBooster: false, meta: 'QA Basics' },
+      // Basic Cloud
+      { skill: 'Basic Cloud Awareness', title: 'AWS / Azure Cloud Intro Course', url: 'https://youtu.be/BSGcQi2WNPg?si=soAJaNnop4YysPnI', ytId: 'BSGcQi2WNPg', resumeBooster: true, meta: 'Cloud Fundamentals' },
+      // API Usage
+      { skill: 'API Usage', title: 'Postman & REST API Tutorial', url: 'https://youtu.be/lId_LdQ8wXU?si=G-Qm3geEwiD9QPUd', ytId: 'lId_LdQ8wXU', resumeBooster: false, meta: 'API Testing' },
+      // Security
+      { skill: 'Security Basics', title: 'Web Security Basics – Full Course', url: 'https://youtu.be/3Kq1MIfTWCE?si=CgON51tAPI-VU6sR', ytId: '3Kq1MIfTWCE', resumeBooster: false, meta: 'Cyber Security Intro' },
+    ];
+
+    let _courseFilter = 'all';
+
+    function ytThumb(ytId) {
+      return `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
+    }
+
+    function setCourseFilter(filter, btn) {
+      _courseFilter = filter;
+      document.querySelectorAll('.cf-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderCourses();
+    }
+
+    function filterCourses() { renderCourses(); }
+
+    function renderCourses() {
+      const q = (document.getElementById('courses-search')?.value || '').toLowerCase();
+      let data = COURSES_DATA;
+
+      if (_courseFilter === 'resume') {
+        data = data.filter(c => c.resumeBooster);
+      } else if (_courseFilter !== 'all') {
+        data = data.filter(c => c.skill === _courseFilter);
+      }
+      if (q) {
+        data = data.filter(c =>
+          c.title.toLowerCase().includes(q) ||
+          c.skill.toLowerCase().includes(q) ||
+          c.meta.toLowerCase().includes(q)
+        );
+      }
+
+      const listing = document.getElementById('courses-listing');
+      if (!listing) return;
+
+      if (data.length === 0) {
+        listing.innerHTML = '<div class="courses-empty">🔍 No courses found. Try a different filter or search term.</div>';
+        return;
+      }
+
+      // Group by skill
+      const groups = {};
+      data.forEach(c => {
+        if (!groups[c.skill]) groups[c.skill] = [];
+        groups[c.skill].push(c);
+      });
+
+      let html = '';
+      for (const [skill, courses] of Object.entries(groups)) {
+        html += `<div class="courses-skill-group">
+        <div class="courses-skill-title">${skill}</div>
+        <div class="courses-grid">`;
+        courses.forEach(c => {
+          const ribbon = c.resumeBooster
+            ? `<div class="resume-badge-ribbon">🔥 Resume Booster</div>` : '';
+          html += `
+        <a class="course-card${c.resumeBooster ? ' resume-booster' : ''}" href="${c.url}" target="_blank" rel="noopener">
+          <div class="course-thumb">
+            <img src="${ytThumb(c.ytId)}" alt="${c.title}" loading="lazy"
+              onerror="this.src='https://img.youtube.com/vi/${c.ytId}/hqdefault.jpg'">
+            <div class="course-thumb-overlay">
+              <div class="play-btn">▶</div>
+            </div>
+            ${ribbon}
+          </div>
+          <div class="course-info">
+            <div class="course-skill-tag">${c.skill}</div>
+            <div class="course-title">${c.title}</div>
+            <div class="course-meta">
+              <div class="course-yt-label">▶ YouTube</div>
+              <div class="dot"></div>
+              <span>${c.meta}</span>
+              ${c.resumeBooster ? '<div class="dot"></div><span style="color:var(--warning);font-weight:700;">🔥 Resume Booster</span>' : ''}
+            </div>
+          </div>
+        </a>`;
+        });
+        html += `</div></div>`;
+      }
+      listing.innerHTML = html;
+    }
+
+    // Hook into go() for courses
+    const _origGo = window.go || null;
+    // patch go for courses init
+    document.addEventListener('DOMContentLoaded', () => {
+      // render once page loads
+      renderCourses();
+    });
   </script>
 
 
