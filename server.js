@@ -1117,6 +1117,26 @@ app.get('/api/alumni/list', async (req, res) => {
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// ─── RESUME WIZARD — AI Comparison ───────────────────────────────────────────
+app.post('/api/resume/compare', async (req, res) => {
+  const { resume_data, company, role } = req.body;
+  const pkg = req.body.package || '';
+  const prompt = `You are a senior technical recruiter with 10+ years of experience at top tech companies.
+A student wants to work at: ${company} | Role: ${role} | Package: ${pkg}
+Student profile: CGPA ${resume_data.cgpa || 'N/A'}, Skills: ${(resume_data.skills || []).join(', ')}, Projects: ${(resume_data.projects || []).length}, Internships: ${(resume_data.internships || []).length}, Achievements: ${(resume_data.achievements || []).length}
+
+Generate a realistic benchmark comparison. Respond ONLY with valid JSON (no markdown):
+{"benchmark":{"summary":"string","cgpa":"string","key_skills":["skill1","skill2"],"projects_count":3,"internships":"string","certifications":["cert1"]},"match_score":72,"strengths":["strength1","strength2","strength3"],"gaps":["gap1","gap2","gap3"],"action_items":["action1","action2","action3"],"verdict":"string"}`;
+  try {
+    const raw = await askAI('You are a technical recruiter. Respond only with valid JSON, no markdown formatting.', [{ role: 'user', content: prompt }]);
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    const result = JSON.parse(jsonMatch ? jsonMatch[0] : raw);
+    res.json({ success: true, comparison: result });
+  } catch (e) {
+    res.status(500).json({ success: false, error: 'AI comparison failed: ' + e.message });
+  }
+});
+
 // ─── SERVE FRONTEND ───────────────────────────────────────────────────────────
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
 app.get('/student', (req, res) => res.sendFile(path.join(__dirname, 'dashboard1.html')));

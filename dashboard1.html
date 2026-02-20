@@ -1634,6 +1634,998 @@
         padding: 18px 16px;
       }
     }
+
+    /* ═══════════════════════════════════════
+       RESUME WIZARD STYLES
+    ═══════════════════════════════════════ */
+    .rw-step-progress {
+      display: flex;
+      align-items: center;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .rw-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .rw-step-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text2);
+      transition: all 0.3s;
+    }
+
+    .rw-step.active .rw-step-circle {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .rw-step.done .rw-step-circle {
+      background: var(--success);
+      border-color: var(--success);
+      color: #fff;
+    }
+
+    .rw-step-label {
+      font-size: 10px;
+      color: var(--text2);
+      white-space: nowrap;
+    }
+
+    .rw-step.active .rw-step-label {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .rw-step-line {
+      flex: 1;
+      height: 2px;
+      background: var(--border);
+      min-width: 16px;
+    }
+
+    .rw-panel {
+      display: none;
+      animation: rwSlideUp 0.3s ease;
+    }
+
+    .rw-panel.active {
+      display: block;
+    }
+
+    @keyframes rwSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .rw-panel-header {
+      margin-bottom: 20px;
+    }
+
+    .rw-panel-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .rw-panel-header p {
+      font-size: 13px;
+      color: var(--text2);
+      margin-top: 4px;
+    }
+
+    .rw-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .rw-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .rw-field label {
+      font-size: 12px;
+      color: var(--text2);
+      font-weight: 600;
+    }
+
+    .rw-full {
+      grid-column: 1 / -1;
+    }
+
+    .rw-input {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 10px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    .rw-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.12);
+    }
+
+    .rw-input option {
+      background: var(--surface2);
+    }
+
+    .rw-sub {
+      margin-bottom: 20px;
+    }
+
+    .rw-sub h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .rw-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .rw-card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .rw-card-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .rw-remove-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text2);
+      cursor: pointer;
+      padding: 2px 8px;
+      font-size: 12px;
+      transition: 0.2s;
+    }
+
+    .rw-remove-btn:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .rw-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+    }
+
+    /* Templates */
+    .rw-template-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .rw-template-card {
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .rw-template-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .rw-template-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.15);
+    }
+
+    .rw-template-preview {
+      height: 160px;
+      padding: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .rw-tpl-info {
+      padding: 10px 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .rw-tpl-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .rw-tpl-desc {
+      font-size: 11px;
+      color: var(--text2);
+      margin-top: 3px;
+    }
+
+    .rw-selected-notice {
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 8px;
+    }
+
+    /* Classic preview */
+    .rw-preview-classic {
+      background: #fff;
+      font-family: serif;
+    }
+
+    .rtp-name {
+      font-size: 11px;
+      font-weight: 900;
+      text-align: center;
+      color: #000;
+      letter-spacing: 1px;
+    }
+
+    .rtp-role {
+      font-size: 7px;
+      text-align: center;
+      color: #333;
+      margin-bottom: 3px;
+    }
+
+    .rtp-contact {
+      font-size: 6px;
+      text-align: center;
+      color: #555;
+    }
+
+    .rtp-hr {
+      border-top: 1px solid #000;
+      margin: 3px 0;
+    }
+
+    .rtp-section {
+      font-size: 7px;
+      font-weight: 700;
+      color: #000;
+      background: #e8e8e8;
+      padding: 1px 4px;
+      margin: 3px 0 1px;
+    }
+
+    .rtp-bold {
+      font-size: 7px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .rtp-text {
+      font-size: 6px;
+      color: #333;
+      line-height: 1.3;
+    }
+
+    /* Modern preview */
+    .rw-preview-modern {
+      background: #fff;
+      padding: 0;
+    }
+
+    .rtp-modern-head {
+      background: #1A237E;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .rtp-college {
+      font-size: 5px;
+      color: rgba(255, 255, 255, 0.7);
+      letter-spacing: 0.5px;
+    }
+
+    .rtp-name-mod {
+      font-size: 11px;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .rtp-role-mod {
+      font-size: 6px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .rtp-mod-section {
+      font-size: 7px;
+      font-weight: 700;
+      color: #1A237E;
+      margin: 4px 6px 1px;
+    }
+
+    .rtp-hr2 {
+      border-top: 1px solid #1A237E;
+      margin: 0 6px 2px;
+    }
+
+    /* Sidebar preview */
+    .rw-preview-sidebar {
+      display: flex;
+      padding: 0;
+      background: #fff;
+    }
+
+    .rtp-sidebar-left {
+      background: #1a2236;
+      width: 40%;
+      padding: 6px;
+    }
+
+    .rtp-sb-head {
+      font-size: 5px;
+      font-weight: 700;
+      color: #06b6d4;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+      margin-top: 4px;
+    }
+
+    .rtp-sb-item {
+      font-size: 5.5px;
+      color: #cbd5e1;
+      margin-bottom: 1px;
+    }
+
+    .rtp-sidebar-right {
+      flex: 1;
+      padding: 6px;
+    }
+
+    .rtp-sb-topbar {
+      font-size: 9px;
+      font-weight: 900;
+      color: #000;
+    }
+
+    .rtp-sb-sub {
+      font-size: 5.5px;
+      color: #555;
+    }
+
+    .rtp-sb-section {
+      font-size: 6.5px;
+      font-weight: 700;
+      color: #1a2236;
+      margin-top: 5px;
+    }
+
+    .rtp-sb-line {
+      border-top: 1px solid #06b6d4;
+      margin: 1px 0 2px;
+    }
+
+    /* Career Dashboard */
+    .rw-dashboard-setup {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .rw-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 32px;
+      color: var(--text2);
+    }
+
+    .rw-loading.hidden {
+      display: none !important;
+    }
+
+    .rw-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    .rw-dash-section {
+      margin-bottom: 24px;
+    }
+
+    .rw-dash-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .rw-score-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .rw-gauge-area {
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .rw-gauge-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .rw-score-svg {
+      width: 130px;
+      height: 130px;
+    }
+
+    .rw-grade-badge {
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 12px;
+      border-radius: 20px;
+    }
+
+    .rw-breakdown-area {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .rw-breakdown-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 10px;
+    }
+
+    .rw-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .rw-bar-lbl {
+      font-size: 12px;
+      color: var(--text2);
+      width: 160px;
+      flex-shrink: 0;
+    }
+
+    .rw-bar-track {
+      flex: 1;
+      background: var(--surface3);
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .rw-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1s ease;
+      width: 0%;
+    }
+
+    .rw-bar-score {
+      font-size: 11px;
+      color: var(--text2);
+      width: 40px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .rw-score-tip {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    .rw-market-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .rw-market-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .rw-mstat {
+      background: var(--surface3);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .rw-mstat-num {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .rw-mstat-lbl {
+      font-size: 11px;
+      color: var(--text2);
+      margin-top: 4px;
+    }
+
+    .rw-market-banner {
+      background: rgba(79, 142, 247, 0.08);
+      border: 1px solid rgba(79, 142, 247, 0.2);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: var(--text);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .rw-skill-gap-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 10px;
+    }
+
+    .rw-skill-gap-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rw-skill-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .rw-skill-name {
+      width: 120px;
+      font-size: 12px;
+      color: var(--text2);
+      flex-shrink: 0;
+    }
+
+    .rw-skill-bar-wrap {
+      flex: 1;
+      background: var(--surface3);
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .rw-skill-bar {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.8s ease;
+      width: 0%;
+    }
+
+    .rw-skill-pct {
+      font-size: 11px;
+      color: var(--text2);
+      width: 32px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .rw-skill-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .rw-skill-badge.have {
+      background: rgba(34, 197, 94, 0.12);
+      color: var(--success);
+    }
+
+    .rw-skill-badge.missing {
+      background: rgba(244, 63, 94, 0.12);
+      color: var(--danger);
+    }
+
+    .rw-path-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .rw-path-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .rw-path-step {
+      display: flex;
+      gap: 14px;
+    }
+
+    .rw-path-node {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      background: var(--surface3);
+      border: 2px solid var(--border);
+      color: var(--text2);
+    }
+
+    .rw-path-node.current {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .rw-path-week {
+      font-size: 11px;
+      color: var(--text2);
+      font-weight: 600;
+    }
+
+    .rw-path-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .rw-path-desc {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    .rw-courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .rw-course-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-decoration: none;
+      color: var(--text);
+      transition: 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .rw-course-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .rw-course-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+      display: inline-block;
+      background: var(--surface3);
+      color: var(--text2);
+    }
+
+    .rw-course-title {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .rw-course-meta {
+      font-size: 11px;
+      color: var(--text2);
+    }
+
+    .rw-course-reason {
+      font-size: 11px;
+      color: var(--text2);
+      font-style: italic;
+    }
+
+    .rw-course-cta {
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+      margin-top: auto;
+    }
+
+    .rw-courses-alert {
+      background: rgba(244, 63, 94, 0.08);
+      border: 1px solid rgba(244, 63, 94, 0.2);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+
+    .rw-courses-alert-green {
+      background: rgba(34, 197, 94, 0.08);
+      border-color: rgba(34, 197, 94, 0.2);
+    }
+
+    /* Step 7 */
+    .rw-action-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .rw-action-icon {
+      font-size: 36px;
+      flex-shrink: 0;
+    }
+
+    .rw-action-content h3 {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .rw-action-content p {
+      font-size: 13px;
+      color: var(--text2);
+      margin-top: 4px;
+    }
+
+    .rw-success-banner {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--success);
+      margin-bottom: 16px;
+    }
+
+    .rw-compare-section {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .rw-compare-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .rw-compare-header h3 {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .rw-ai-badge {
+      font-size: 11px;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: var(--purple);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .rw-results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 16px 0;
+    }
+
+    .rw-match-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .rw-match-circle span:first-child {
+      font-size: 22px;
+    }
+
+    .rw-match-label {
+      font-size: 9px;
+      opacity: 0.8;
+    }
+
+    .rw-benchmark-box {
+      background: var(--surface3);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .rw-benchmark-box h4 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .rw-results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .rw-col {
+      background: var(--surface3);
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .rw-col h4 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .rw-col ul,
+    .rw-col ol {
+      padding-left: 18px;
+    }
+
+    .rw-col li {
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+
+    .rw-strengths {
+      border-top: 3px solid var(--success);
+    }
+
+    .rw-gaps {
+      border-top: 3px solid var(--danger);
+    }
+
+    .rw-action-items {
+      background: var(--surface3);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .rw-action-items h4 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .rw-action-items ol {
+      padding-left: 18px;
+    }
+
+    .rw-action-items li {
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+
+    .rw-verdict {
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .rw-verdict h4 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--purple);
+    }
+
+    .rw-verdict p {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+
+      .rw-form-grid,
+      .rw-template-grid,
+      .rw-results-grid,
+      .rw-market-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .rw-action-card {
+        flex-wrap: wrap;
+      }
+    }
   </style>
 </head>
 
@@ -1681,6 +2673,9 @@
       <div class="nav-item" onclick="go('assessments')" id="nav-assessments">
         <span class="nav-icon">📝</span> Assessments
         <span class="nav-badge" id="assess-badge" style="display:none;">0</span>
+      </div>
+      <div class="nav-item" onclick="go('resume-wizard')" id="nav-resume-wizard">
+        <span class="nav-icon">✨</span> Resume Wizard
       </div>
     </div>
 
@@ -1903,6 +2898,481 @@
       </div>
     </div>
 
+    <!-- RESUME WIZARD PAGE -->
+    <div class="page" id="page-resume-wizard">
+      <!-- STEP PROGRESS -->
+      <div class="rw-step-progress" id="rw-step-progress">
+        <div class="rw-step active" data-step="1">
+          <div class="rw-step-circle">1</div>
+          <div class="rw-step-label">Personal</div>
+        </div>
+        <div class="rw-step-line"></div>
+        <div class="rw-step" data-step="2">
+          <div class="rw-step-circle">2</div>
+          <div class="rw-step-label">Education</div>
+        </div>
+        <div class="rw-step-line"></div>
+        <div class="rw-step" data-step="3">
+          <div class="rw-step-circle">3</div>
+          <div class="rw-step-label">Skills &amp; Projects</div>
+        </div>
+        <div class="rw-step-line"></div>
+        <div class="rw-step" data-step="4">
+          <div class="rw-step-circle">4</div>
+          <div class="rw-step-label">Experience</div>
+        </div>
+        <div class="rw-step-line"></div>
+        <div class="rw-step" data-step="5">
+          <div class="rw-step-circle">5</div>
+          <div class="rw-step-label">Template</div>
+        </div>
+        <div class="rw-step-line"></div>
+        <div class="rw-step" data-step="6">
+          <div class="rw-step-circle">📊</div>
+          <div class="rw-step-label">Dashboard</div>
+        </div>
+        <div class="rw-step-line"></div>
+        <div class="rw-step" data-step="7">
+          <div class="rw-step-circle">7</div>
+          <div class="rw-step-label">Generate</div>
+        </div>
+      </div>
+
+      <!-- STEP 1: PERSONAL -->
+      <div class="rw-panel active" id="rw-step-1">
+        <div class="rw-panel-header">
+          <h2>👤 Personal Information</h2>
+          <p>Let's start with the basics</p>
+        </div>
+        <div class="rw-form-grid">
+          <div class="rw-field"><label>Full Name *</label><input type="text" id="rw-name" placeholder="Rahul Sharma"
+              class="rw-input"></div>
+          <div class="rw-field"><label>Email Address *</label><input type="email" id="rw-email"
+              placeholder="rahul@college.edu" class="rw-input"></div>
+          <div class="rw-field"><label>Phone Number</label><input type="text" id="rw-phone"
+              placeholder="+91 98765 43210" class="rw-input"></div>
+          <div class="rw-field"><label>LinkedIn Profile</label><input type="text" id="rw-linkedin"
+              placeholder="linkedin.com/in/rahulsharma" class="rw-input"></div>
+          <div class="rw-field"><label>GitHub Profile</label><input type="text" id="rw-github"
+              placeholder="github.com/rahulsharma" class="rw-input"></div>
+          <div class="rw-field"><label>Target Role / Headline</label><input type="text" id="rw-objective-role"
+              placeholder="Passionate CSE Student" class="rw-input"></div>
+          <div class="rw-field rw-full"><label>Summary / About Me</label><textarea id="rw-summary" rows="3"
+              placeholder="I am a CSE student passionate about AI/ML..." class="rw-input"></textarea></div>
+        </div>
+        <div class="rw-actions">
+          <div></div><button class="btn btn-primary" onclick="rwNext(2)">Next: Education →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: EDUCATION -->
+      <div class="rw-panel" id="rw-step-2">
+        <div class="rw-panel-header">
+          <h2>🎓 Education</h2>
+          <p>Your academic background</p>
+        </div>
+        <div class="rw-form-grid">
+          <div class="rw-field rw-full"><label>College / University *</label><input type="text" id="rw-college"
+              placeholder="Vidyavardhaka College of Engineering" class="rw-input"></div>
+          <div class="rw-field rw-full"><label>Degree &amp; Branch *</label><input type="text" id="rw-degree"
+              placeholder="B.E in CSE-AIML" class="rw-input"></div>
+          <div class="rw-field"><label>Current Semester</label><input type="text" id="rw-sem" placeholder="5"
+              class="rw-input"></div>
+          <div class="rw-field"><label>CGPA *</label><input type="number" id="rw-cgpa" step="0.01" min="0" max="10"
+              placeholder="8.63" class="rw-input"></div>
+          <div class="rw-field"><label>Year of Study / Graduation</label><input type="text" id="rw-year"
+              placeholder="2022 – 2026" class="rw-input"></div>
+          <div class="rw-field"><label>City / Location</label><input type="text" id="rw-city" placeholder="Mangalore"
+              class="rw-input"></div>
+          <div class="rw-field"><label>12th School Name</label><input type="text" id="rw-puc-school"
+              placeholder="Vivekanandha PUC" class="rw-input"></div>
+          <div class="rw-field"><label>12th Stream</label><input type="text" id="rw-puc-stream" placeholder="PCMB"
+              class="rw-input"></div>
+          <div class="rw-field"><label>12th Percentage *</label><input type="text" id="rw-twelfth" placeholder="91.5"
+              class="rw-input"></div>
+          <div class="rw-field"><label>10th School Name</label><input type="text" id="rw-school"
+              placeholder="Vivekanandha EM School" class="rw-input"></div>
+          <div class="rw-field"><label>10th Percentage *</label><input type="text" id="rw-tenth" placeholder="87.04"
+              class="rw-input"></div>
+        </div>
+        <div class="rw-actions">
+          <button class="btn btn-outline" onclick="rwNext(1)">← Back</button>
+          <button class="btn btn-primary" onclick="rwNext(3)">Next: Skills →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: SKILLS & PROJECTS -->
+      <div class="rw-panel" id="rw-step-3">
+        <div class="rw-panel-header">
+          <h2>💻 Skills &amp; Projects</h2>
+          <p>Showcase what you can do</p>
+        </div>
+        <div class="rw-sub">
+          <h3>Technical Skills</h3>
+          <div class="rw-form-grid">
+            <div class="rw-field"><label>Languages</label><input type="text" id="rw-langs"
+                placeholder="Python, Java, C++, JavaScript" class="rw-input"></div>
+            <div class="rw-field"><label>Frameworks &amp; Libraries</label><input type="text" id="rw-frameworks"
+                placeholder="React, Node.js, Flask" class="rw-input"></div>
+            <div class="rw-field"><label>Tools &amp; Platforms</label><input type="text" id="rw-tools"
+                placeholder="Git, Docker, AWS, Linux" class="rw-input"></div>
+            <div class="rw-field"><label>Databases</label><input type="text" id="rw-dbs" placeholder="MySQL, MongoDB"
+                class="rw-input"></div>
+          </div>
+        </div>
+        <div class="rw-sub">
+          <h3>Languages Known</h3>
+          <input type="text" id="rw-languages-known" placeholder="English, Kannada, Hindi" class="rw-input"
+            style="margin-bottom:12px;">
+        </div>
+        <div class="rw-sub">
+          <h3>Interests / Hobbies</h3>
+          <input type="text" id="rw-interests" placeholder="NCC, Karate, Drawing, Chess" class="rw-input"
+            style="margin-bottom:12px;">
+        </div>
+        <div class="rw-sub">
+          <h3>Completed Projects (for sidebar template)</h3>
+          <input type="text" id="rw-completed-projects" placeholder="NCC Website, Bus Tracking, Digital Verification"
+            class="rw-input" style="margin-bottom:12px;">
+        </div>
+        <div class="rw-sub">
+          <h3>Active / Ongoing Projects</h3>
+          <div id="rw-projects-container">
+            <div class="rw-card" data-index="0">
+              <div class="rw-card-row"><span class="rw-card-label">Project 1</span><button class="rw-remove-btn"
+                  onclick="rwRemoveProject(this)">✕</button></div>
+              <div class="rw-form-grid">
+                <div class="rw-field"><label>Project Title</label><input type="text" placeholder="Posture Detection AI"
+                    class="rw-input rw-proj-title"></div>
+                <div class="rw-field"><label>Tech Stack</label><input type="text" placeholder="Python, OpenCV"
+                    class="rw-input rw-proj-tech"></div>
+                <div class="rw-field"><label>Status</label><select class="rw-input rw-proj-status">
+                    <option value="done">Completed</option>
+                    <option value="ongoing">Currently Working</option>
+                  </select></div>
+                <div class="rw-field"><label>GitHub/Live Link</label><input type="text"
+                    placeholder="github.com/you/project" class="rw-input rw-proj-link"></div>
+                <div class="rw-field rw-full"><label>Description (one point per line)</label><textarea rows="3"
+                    placeholder="Detects posture of workers&#10;Gives real-time feedback"
+                    class="rw-input rw-proj-desc"></textarea></div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-outline" style="margin-top:8px;font-size:13px;padding:8px 16px;"
+            onclick="rwAddProject()">+ Add Project</button>
+        </div>
+        <div class="rw-sub">
+          <h3>Achievements &amp; Certifications</h3>
+          <textarea id="rw-achievements" rows="4"
+            placeholder="Winner of state level model competition (TECK SPARK 2025)&#10;Google Arcade Legend Rank"
+            class="rw-input"></textarea>
+        </div>
+        <div class="rw-actions">
+          <button class="btn btn-outline" onclick="rwNext(2)">← Back</button>
+          <button class="btn btn-primary" onclick="rwNext(4)">Next: Experience →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: INTERNSHIPS -->
+      <div class="rw-panel" id="rw-step-4">
+        <div class="rw-panel-header">
+          <h2>💼 Internships &amp; Experience</h2>
+          <p>Work experience (skip if none)</p>
+        </div>
+        <div id="rw-internships-container">
+          <div class="rw-card" data-index="0">
+            <div class="rw-card-row"><span class="rw-card-label">Internship 1</span><button class="rw-remove-btn"
+                onclick="rwRemoveInternship(this)">✕</button></div>
+            <div class="rw-form-grid">
+              <div class="rw-field"><label>Role / Position</label><input type="text"
+                  placeholder="Software Development Intern" class="rw-input rw-int-role"></div>
+              <div class="rw-field"><label>Company</label><input type="text" placeholder="Amazon"
+                  class="rw-input rw-int-company"></div>
+              <div class="rw-field"><label>Duration</label><input type="text" placeholder="May 2024 – Jul 2024"
+                  class="rw-input rw-int-duration"></div>
+              <div class="rw-field rw-full"><label>What you did (one point per line)</label><textarea rows="3"
+                  placeholder="Built REST APIs handling 10k requests/day" class="rw-input rw-int-desc"></textarea></div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-outline" style="margin-top:8px;font-size:13px;padding:8px 16px;"
+          onclick="rwAddInternship()">+ Add Internship</button>
+        <div class="rw-actions">
+          <button class="btn btn-outline" onclick="rwNext(3)">← Back</button>
+          <button class="btn btn-primary" onclick="rwNext(5)">Next: Template →</button>
+        </div>
+      </div>
+
+      <!-- STEP 5: TEMPLATE -->
+      <div class="rw-panel" id="rw-step-5">
+        <div class="rw-panel-header">
+          <h2>🎨 Choose Your Resume Template</h2>
+          <p>All are professional and ATS-friendly</p>
+        </div>
+        <div class="rw-template-grid">
+          <div class="rw-template-card selected" data-template="classic" onclick="rwSelectTemplate('classic')">
+            <div class="rw-template-preview rw-preview-classic">
+              <div class="rtp-name">JOHN DOE</div>
+              <div class="rtp-role">Passionate CSE Student</div>
+              <div class="rtp-contact">Mangalore | john@email.com</div>
+              <div class="rtp-hr"></div>
+              <div class="rtp-section">SUMMARY</div>
+              <div class="rtp-text">Passionate CSE-AIML student...</div>
+              <div class="rtp-section">EDUCATION</div>
+              <div class="rtp-bold">VVC Engineering College</div>
+              <div class="rtp-text">B.E CSE-AIML | CGPA: 8.63</div>
+              <div class="rtp-section">PROJECTS</div>
+              <div class="rtp-text">• Posture Detection AI</div>
+            </div>
+            <div class="rw-tpl-info">
+              <div class="rw-tpl-name">✅ Classic</div>
+              <div class="rw-tpl-desc">Clean black &amp; white. Traditional and ATS-friendly.</div>
+            </div>
+          </div>
+          <div class="rw-template-card" data-template="modern" onclick="rwSelectTemplate('modern')">
+            <div class="rw-template-preview rw-preview-modern">
+              <div class="rtp-modern-head">
+                <div class="rtp-college">NATIONAL INSTITUTE OF TECHNOLOGY</div>
+                <div class="rtp-name-mod">JOHN DOE</div>
+                <div class="rtp-role-mod">Software Development Engineer</div>
+              </div>
+              <div class="rtp-mod-section">EDUCATION</div>
+              <div class="rtp-hr2"></div>
+              <div class="rtp-bold">VVC Engineering | CGPA: 8.63</div>
+              <div class="rtp-mod-section">PROJECTS</div>
+              <div class="rtp-hr2"></div>
+              <div class="rtp-text">Posture Detection AI | Python</div>
+            </div>
+            <div class="rw-tpl-info">
+              <div class="rw-tpl-name">🔵 Modern Blue</div>
+              <div class="rw-tpl-desc">College-branded blue header. Great for campus placements.</div>
+            </div>
+          </div>
+          <div class="rw-template-card" data-template="sidebar" onclick="rwSelectTemplate('sidebar')">
+            <div class="rw-template-preview rw-preview-sidebar">
+              <div class="rtp-sidebar-left">
+                <div class="rtp-sb-head">CONTACT</div>
+                <div class="rtp-sb-item">+91 98765 43210</div>
+                <div class="rtp-sb-head">SKILLS</div>
+                <div class="rtp-sb-item">• Python</div>
+                <div class="rtp-sb-item">• Java</div>
+                <div class="rtp-sb-head">LANGUAGES</div>
+                <div class="rtp-sb-item">• English</div>
+              </div>
+              <div class="rtp-sidebar-right">
+                <div class="rtp-sb-topbar">JOHN DOE</div>
+                <div class="rtp-sb-sub">CSE Student</div>
+                <div class="rtp-sb-section">Education</div>
+                <div class="rtp-sb-line"></div>
+                <div class="rtp-bold" style="font-size:7px;margin-top:2px;">VVC Engineering | CGPA: 8.63</div>
+              </div>
+            </div>
+            <div class="rw-tpl-info">
+              <div class="rw-tpl-name">🌙 Dark Sidebar</div>
+              <div class="rw-tpl-desc">Dark navy sidebar with cyan accents. Perfect for standing out.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rw-selected-notice">Selected: <strong id="rw-selected-name">Classic</strong></div>
+        <div class="rw-actions">
+          <button class="btn btn-outline" onclick="rwNext(4)">← Back</button>
+          <button class="btn btn-primary" onclick="rwGoToDashboard()">Next: View My Dashboard 📊 →</button>
+        </div>
+      </div>
+
+      <!-- STEP 6: CAREER INTELLIGENCE DASHBOARD -->
+      <div class="rw-panel" id="rw-step-6">
+        <div class="rw-panel-header">
+          <h2>📊 Career Intelligence Dashboard</h2>
+          <p>Your profile score, skill gaps, course recommendations &amp; market insights</p>
+        </div>
+        <div class="rw-dashboard-setup">
+          <label style="font-weight:600;font-size:0.9rem;color:var(--accent);">🎯 What role are you targeting?</label>
+          <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;align-items:center;">
+            <select id="rw-target-role" class="rw-input" style="max-width:260px;">
+              <option value="">Select a role...</option>
+              <option>Software Developer</option>
+              <option>Data Analyst</option>
+              <option>Full Stack Developer</option>
+              <option>ML Engineer</option>
+              <option>Cloud Engineer</option>
+              <option>DevOps Engineer</option>
+            </select>
+            <button class="btn btn-primary" onclick="rwLoadDashboard()">🔍 Analyze My Profile</button>
+          </div>
+        </div>
+        <div id="rw-dash-loading" class="rw-loading hidden">
+          <div class="rw-spinner"></div>
+          <p>Analyzing your profile against market data...</p>
+        </div>
+        <div id="rw-dash-content" class="hidden">
+
+          <!-- SCORE SECTION -->
+          <div class="rw-dash-section">
+            <div class="rw-dash-title">🏆 Profile Score</div>
+            <div class="rw-score-card">
+              <div class="rw-gauge-area">
+                <div class="rw-gauge-wrap">
+                  <svg class="rw-score-svg" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="48" fill="none" stroke="var(--surface3)" stroke-width="12" />
+                    <circle id="rw-score-ring" cx="60" cy="60" r="48" fill="none" stroke="var(--accent)"
+                      stroke-width="12" stroke-dasharray="301.6" stroke-dashoffset="301.6" stroke-linecap="round"
+                      transform="rotate(-90 60 60)" style="transition:stroke-dashoffset 1.5s ease" />
+                    <text x="60" y="56" text-anchor="middle" font-family="DM Sans" font-weight="800" font-size="26"
+                      fill="var(--text)" id="rw-score-text">0</text>
+                    <text x="60" y="72" text-anchor="middle" font-family="DM Sans" font-size="10" fill="var(--text2)"
+                      id="rw-score-label">Calculating</text>
+                  </svg>
+                  <div class="rw-grade-badge" id="rw-score-grade">--</div>
+                </div>
+              </div>
+              <div class="rw-breakdown-area">
+                <div class="rw-breakdown-title">Score Breakdown (out of 100)</div>
+                <div id="rw-score-bars"></div>
+                <div class="rw-score-tip" id="rw-score-tip"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MARKET INTEL -->
+          <div id="rw-market-section" class="rw-dash-section hidden">
+            <div class="rw-dash-title">🔬 Market Intelligence</div>
+            <div class="rw-market-card">
+              <div class="rw-market-stats" id="rw-market-stats"></div>
+              <div class="rw-market-banner" id="rw-market-banner"></div>
+              <div class="rw-skill-gap-title">Skills demanded by placed <span id="rw-market-role"></span>s</div>
+              <div class="rw-skill-gap-grid" id="rw-skill-gap-grid"></div>
+            </div>
+          </div>
+
+          <!-- LEARNING PATH -->
+          <div class="rw-dash-section">
+            <div class="rw-dash-title">🗺️ Your 3-Month Learning Path</div>
+            <div class="rw-path-card">
+              <div class="rw-path-timeline" id="rw-path-timeline"></div>
+            </div>
+          </div>
+
+          <!-- COURSES -->
+          <div class="rw-dash-section">
+            <div class="rw-dash-title">📚 Resume Booster Courses</div>
+            <div id="rw-courses-note"></div>
+            <div class="rw-courses-grid" id="rw-courses-grid"></div>
+          </div>
+        </div>
+        <div class="rw-actions">
+          <button class="btn btn-outline" onclick="rwNext(5)">← Back</button>
+          <button class="btn btn-primary" onclick="rwNext(7)">Next: Generate &amp; Compare →</button>
+        </div>
+      </div>
+
+      <!-- STEP 7: GENERATE & COMPARE -->
+      <div class="rw-panel" id="rw-step-7">
+        <div class="rw-panel-header">
+          <h2>🚀 Generate &amp; Compare</h2>
+          <p>Download your resume then benchmark against real hiring data</p>
+        </div>
+
+        <div class="rw-action-card">
+          <div class="rw-action-icon">📄</div>
+          <div class="rw-action-content">
+            <h3>Generate Your Resume</h3>
+            <p>Template: <strong id="rw-chosen-template">Classic</strong> · College-branded PDF</p>
+            <p style="font-size:12px;color:var(--text2);margin-top:6px;">⚠️ PDF generation requires the Python backend.
+              Copy your data using the button below to generate it separately, or contact your admin.</p>
+          </div>
+          <button class="btn btn-primary" id="rw-gen-btn" onclick="rwCopyResumeData()">📋 Copy Resume Data</button>
+        </div>
+        <div id="rw-copy-success" class="rw-success-banner hidden">✅ Resume data copied to clipboard! Paste it into your
+          resume tool.</div>
+
+        <!-- AI COMPARISON -->
+        <div class="rw-compare-section">
+          <div class="rw-compare-header">
+            <h3>🔍 AI Resume Comparison</h3>
+            <div class="rw-ai-badge">⚡ Powered by Gemini AI</div>
+          </div>
+          <p style="color:var(--text2);font-size:14px;margin-bottom:18px;">Tell us your target company and package. Our
+            AI benchmarks your resume against real hiring patterns of candidates who've cracked similar roles.</p>
+          <div class="rw-form-grid">
+            <div class="rw-field">
+              <label>Target Company</label>
+              <select id="rw-target-company" class="rw-input">
+                <option value="">Select company...</option>
+                <option>Google</option>
+                <option>Microsoft</option>
+                <option>Amazon</option>
+                <option>Flipkart</option>
+                <option>Zomato</option>
+                <option>Swiggy</option>
+                <option>Paytm</option>
+                <option>Infosys</option>
+                <option>TCS</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="rw-field">
+              <label>Target Role</label>
+              <input type="text" id="rw-cmp-role" placeholder="Software Development Engineer" class="rw-input">
+            </div>
+            <div class="rw-field">
+              <label>Expected Package</label>
+              <select id="rw-target-pkg" class="rw-input">
+                <option value="">Select range...</option>
+                <option>5-10 LPA</option>
+                <option>10-20 LPA</option>
+                <option>20-35 LPA</option>
+                <option>35-50 LPA</option>
+                <option>50+ LPA</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="rw-compare-btn" onclick="rwCompareResume()" style="margin-top:8px;">🔍
+            Compare with AI Benchmark</button>
+          <div id="rw-compare-loading" class="rw-loading hidden">
+            <div class="rw-spinner"></div>
+            <p>AI is analyzing real hiring patterns...</p>
+          </div>
+          <div id="rw-compare-results" class="hidden">
+            <div class="rw-results-header">
+              <h3>Your Comparison Results</h3>
+              <div class="rw-match-circle"><span id="rw-match-score">0</span><span class="rw-match-label">Match %</span>
+              </div>
+            </div>
+            <div class="rw-benchmark-box">
+              <h4>📊 Benchmark Profile</h4>
+              <div id="rw-benchmark-content"></div>
+            </div>
+            <div class="rw-results-grid">
+              <div class="rw-col rw-strengths">
+                <h4>✅ Your Strengths</h4>
+                <ul id="rw-strengths-list"></ul>
+              </div>
+              <div class="rw-col rw-gaps">
+                <h4>⚠️ Gaps to Bridge</h4>
+                <ul id="rw-gaps-list"></ul>
+              </div>
+            </div>
+            <div class="rw-action-items">
+              <h4>🎯 Your Action Plan</h4>
+              <ol id="rw-action-list"></ol>
+            </div>
+            <div class="rw-verdict">
+              <h4>🤖 AI Verdict</h4>
+              <p id="rw-verdict-text"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="rw-actions">
+          <button class="btn btn-outline" onclick="rwNext(6)">← Back</button>
+          <button class="btn btn-primary" onclick="go('feed')">View Eligible Drives →</button>
+        </div>
+      </div>
+
+    </div>
+    <!-- END RESUME WIZARD PAGE -->
+
   </div><!-- /main -->
 
   <!-- APPLY CONFIRM MODAL -->
@@ -1969,7 +3439,8 @@
       tracker: ['My Applications', 'Track your placement progress'],
       assessments: ['Assessments', 'Tests & evaluations'],
       quiz: ['Take Assessment', 'Complete your test'],
-      profile: ['My Profile', 'Your academic profile']
+      profile: ['My Profile', 'Your academic profile'],
+      'resume-wizard': ['Resume Wizard', 'Build your resume & get AI insights']
     };
 
     function go(page) {
@@ -1988,6 +3459,7 @@
       if (page === 'tracker') loadTracker();
       if (page === 'assessments') loadAssessments();
       if (page === 'profile') loadProfile();
+      if (page === 'resume-wizard') rwInit();
       // Close notif panel on nav
       document.getElementById('notif-panel').classList.remove('show');
     }
@@ -2569,6 +4041,374 @@
 
       // Periodic notification check
       setInterval(loadNotifications, 30000);
+
+      // ═══════════════════════════════════════════════════════════
+      // RESUME WIZARD
+      // ═══════════════════════════════════════════════════════════
+      let rwCurrentStep = 1;
+      let rwSelectedTemplate = 'classic';
+      let rwProjCount = 1;
+      let rwInternCount = 1;
+      let rwInitialized = false;
+
+      const rwTemplateNames = { classic: 'Classic (Black & White)', modern: 'Modern Blue', sidebar: 'Dark Sidebar' };
+
+      const RW_MARKET = {
+        'Data Analyst': { skills: { Python: 92, SQL: 88, PowerBI: 80, Excel: 75, Tableau: 65, 'Machine Learning': 45 }, avg_cgpa: 7.2, avg_package: '12 LPA', placed_count: 1200 },
+        'Software Developer': { skills: { DSA: 95, Java: 75, Python: 72, 'System Design': 68, Git: 85, SQL: 60, React: 55 }, avg_cgpa: 7.5, avg_package: '20 LPA', placed_count: 4500 },
+        'Full Stack Developer': { skills: { React: 88, 'Node.js': 82, SQL: 78, Python: 65, DSA: 70, AWS: 55, Docker: 50 }, avg_cgpa: 7.3, avg_package: '18 LPA', placed_count: 2100 },
+        'ML Engineer': { skills: { Python: 98, 'Machine Learning': 95, 'Deep Learning': 82, SQL: 70, Cloud: 65, DSA: 75 }, avg_cgpa: 7.8, avg_package: '22 LPA', placed_count: 800 },
+        'Cloud Engineer': { skills: { AWS: 85, Docker: 78, Kubernetes: 65, Python: 70, Linux: 72, Terraform: 55 }, avg_cgpa: 7.0, avg_package: '20 LPA', placed_count: 650 },
+        'DevOps Engineer': { skills: { Docker: 88, 'CI/CD': 85, Kubernetes: 72, Python: 68, AWS: 78, Linux: 80, Git: 90 }, avg_cgpa: 7.0, avg_package: '18 LPA', placed_count: 500 },
+      };
+
+      const RW_COURSES = {
+        DSA: [{ platform: 'Udemy', title: 'Master the Coding Interview: Data Structures + Algorithms', rating: '4.7', duration: '19.5 hrs', url: 'https://www.udemy.com/course/master-the-coding-interview-data-structures-algorithms/' }],
+        'System Design': [{ platform: 'Udemy', title: 'Grokking the System Design Interview', rating: '4.6', duration: '12 hrs', url: 'https://www.udemy.com/course/system-design-interview-prep/' }],
+        'Machine Learning': [{ platform: 'Coursera', title: 'Machine Learning Specialization – Andrew Ng', rating: '4.9', duration: '3 months', url: 'https://www.coursera.org/specializations/machine-learning-introduction' }],
+        Python: [{ platform: 'Udemy', title: '100 Days of Code – Python Pro Bootcamp', rating: '4.7', duration: '65 hrs', url: 'https://www.udemy.com/course/100-days-of-code/' }],
+        React: [{ platform: 'Udemy', title: 'React – The Complete Guide 2024', rating: '4.7', duration: '69 hrs', url: 'https://www.udemy.com/course/react-the-complete-guide-incl-redux/' }],
+        SQL: [{ platform: 'Udemy', title: 'The Complete SQL Bootcamp: Go from Zero to Hero', rating: '4.7', duration: '9 hrs', url: 'https://www.udemy.com/course/the-complete-sql-bootcamp/' }],
+        AWS: [{ platform: 'Coursera', title: 'AWS Cloud Practitioner Essentials', rating: '4.6', duration: '2 months', url: 'https://www.coursera.org/learn/aws-cloud-practitioner-essentials' }],
+        Docker: [{ platform: 'Udemy', title: 'Docker & Kubernetes: The Practical Guide', rating: '4.7', duration: '22 hrs', url: 'https://www.udemy.com/course/docker-kubernetes-the-practical-guide/' }],
+        Java: [{ platform: 'Udemy', title: 'Java Masterclass 2024 – Tim Buchalka', rating: '4.7', duration: '100+ hrs', url: 'https://www.udemy.com/course/java-the-complete-java-developer-course/' }],
+        PowerBI: [{ platform: 'Udemy', title: 'Microsoft Power BI – Up & Running', rating: '4.6', duration: '18 hrs', url: 'https://www.udemy.com/course/mspowerbi/' }],
+      };
+
+      function rwInit() {
+        if (!rwInitialized && studentData) {
+          // Pre-fill from student data
+          const s = studentData;
+          const setVal = (id, v) => { const el = document.getElementById(id); if (el && v) el.value = v; };
+          setVal('rw-name', s.name);
+          setVal('rw-email', s.email || s.personalEmail || s.collegeEmail || '');
+          setVal('rw-phone', s.phone || '');
+          setVal('rw-college', s.college || '');
+          setVal('rw-degree', s.degree || (s.branch ? `B.E in ${s.branch}` : ''));
+          setVal('rw-cgpa', s.cgpa || '');
+          setVal('rw-twelfth', s.twelfthMarks || s.puc || '');
+          setVal('rw-tenth', s.tenthMarks || s.tenth || '');
+          setVal('rw-sem', s.sem || '');
+          rwInitialized = true;
+        }
+      }
+
+      function rwNext(n) {
+        document.getElementById(`rw-step-${rwCurrentStep}`).classList.remove('active');
+        document.querySelectorAll('.rw-step').forEach((el, i) => {
+          el.classList.remove('active', 'done');
+          if (i + 1 < n) el.classList.add('done');
+        });
+        rwCurrentStep = n;
+        document.getElementById(`rw-step-${n}`).classList.add('active');
+        const stepEl = document.querySelector(`.rw-step[data-step="${n}"]`);
+        if (stepEl) stepEl.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (n === 7) document.getElementById('rw-chosen-template').textContent = rwTemplateNames[rwSelectedTemplate];
+      }
+
+      function rwGoToDashboard() {
+        rwNext(6);
+        const role = document.getElementById('rw-target-role').value;
+        if (role) rwLoadDashboard();
+      }
+
+      function rwSelectTemplate(t) {
+        rwSelectedTemplate = t;
+        document.querySelectorAll('.rw-template-card').forEach(c => c.classList.toggle('selected', c.dataset.template === t));
+        document.getElementById('rw-selected-name').textContent = rwTemplateNames[t];
+      }
+
+      function rwAddProject() {
+        const c = document.getElementById('rw-projects-container');
+        rwProjCount++;
+        const d = document.createElement('div');
+        d.className = 'rw-card';
+        d.innerHTML = `<div class="rw-card-row"><span class="rw-card-label">Project ${rwProjCount}</span><button class="rw-remove-btn" onclick="rwRemoveProject(this)">✕</button></div>
+          <div class="rw-form-grid">
+            <div class="rw-field"><label>Project Title</label><input type="text" class="rw-input rw-proj-title" placeholder="My Project"></div>
+            <div class="rw-field"><label>Tech Stack</label><input type="text" class="rw-input rw-proj-tech" placeholder="Python, React"></div>
+            <div class="rw-field"><label>Status</label><select class="rw-input rw-proj-status"><option value="done">Completed</option><option value="ongoing">Currently Working</option></select></div>
+            <div class="rw-field"><label>GitHub/Live Link</label><input type="text" class="rw-input rw-proj-link" placeholder="github.com/you/project"></div>
+            <div class="rw-field rw-full"><label>Description (one point per line)</label><textarea rows="3" class="rw-input rw-proj-desc"></textarea></div>
+          </div>`;
+        c.appendChild(d);
+      }
+      function rwRemoveProject(btn) { btn.closest('.rw-card').remove(); }
+
+      function rwAddInternship() {
+        const c = document.getElementById('rw-internships-container');
+        rwInternCount++;
+        const d = document.createElement('div');
+        d.className = 'rw-card';
+        d.innerHTML = `<div class="rw-card-row"><span class="rw-card-label">Internship ${rwInternCount}</span><button class="rw-remove-btn" onclick="rwRemoveInternship(this)">✕</button></div>
+          <div class="rw-form-grid">
+            <div class="rw-field"><label>Role</label><input type="text" class="rw-input rw-int-role" placeholder="Software Development Intern"></div>
+            <div class="rw-field"><label>Company</label><input type="text" class="rw-input rw-int-company" placeholder="Amazon"></div>
+            <div class="rw-field"><label>Duration</label><input type="text" class="rw-input rw-int-duration" placeholder="May 2024 – Jul 2024"></div>
+            <div class="rw-field rw-full"><label>What you did</label><textarea rows="3" class="rw-input rw-int-desc"></textarea></div>
+          </div>`;
+        c.appendChild(d);
+      }
+      function rwRemoveInternship(btn) { btn.closest('.rw-card').remove(); }
+
+      function rwCollectData() {
+        const allSkills = [];
+        ['rw-langs', 'rw-frameworks', 'rw-tools', 'rw-dbs'].forEach(id => {
+          const v = document.getElementById(id)?.value.trim();
+          if (v) v.split(',').map(s => s.trim()).filter(Boolean).forEach(s => allSkills.push(s));
+        });
+        const projects = [];
+        document.querySelectorAll('#rw-projects-container .rw-card').forEach(card => {
+          const t = card.querySelector('.rw-proj-title')?.value.trim();
+          if (t) projects.push({ title: t, tech: card.querySelector('.rw-proj-tech')?.value.trim() || '', status: card.querySelector('.rw-proj-status')?.value || 'done', link: card.querySelector('.rw-proj-link')?.value.trim() || '', description: card.querySelector('.rw-proj-desc')?.value.trim() || '' });
+        });
+        const internships = [];
+        document.querySelectorAll('#rw-internships-container .rw-card').forEach(card => {
+          const c = card.querySelector('.rw-int-company')?.value.trim();
+          if (c) internships.push({ role: card.querySelector('.rw-int-role')?.value.trim() || '', company: c, duration: card.querySelector('.rw-int-duration')?.value.trim() || '', description: card.querySelector('.rw-int-desc')?.value.trim() || '' });
+        });
+        const achievements = (document.getElementById('rw-achievements')?.value || '').split('\n').map(s => s.replace(/^[•\-]\s*/, '').trim()).filter(Boolean);
+        return {
+          name: document.getElementById('rw-name')?.value.trim() || '',
+          email: document.getElementById('rw-email')?.value.trim() || '',
+          phone: document.getElementById('rw-phone')?.value.trim() || '',
+          linkedin: document.getElementById('rw-linkedin')?.value.trim() || '',
+          github: document.getElementById('rw-github')?.value.trim() || '',
+          objective_role: document.getElementById('rw-objective-role')?.value.trim() || '',
+          summary: document.getElementById('rw-summary')?.value.trim() || '',
+          education: {
+            college: document.getElementById('rw-college')?.value.trim() || '',
+            degree: document.getElementById('rw-degree')?.value.trim() || '',
+            sem: document.getElementById('rw-sem')?.value.trim() || '',
+            cgpa: document.getElementById('rw-cgpa')?.value.trim() || '',
+            year: document.getElementById('rw-year')?.value.trim() || '',
+            city: document.getElementById('rw-city')?.value.trim() || '',
+            puc_school: document.getElementById('rw-puc-school')?.value.trim() || '',
+            puc_stream: document.getElementById('rw-puc-stream')?.value.trim() || '',
+            twelfth: document.getElementById('rw-twelfth')?.value.trim() || '',
+            school: document.getElementById('rw-school')?.value.trim() || '',
+            tenth: document.getElementById('rw-tenth')?.value.trim() || '',
+          },
+          skills: allSkills, projects, internships, achievements,
+          template: rwSelectedTemplate
+        };
+      }
+
+      function rwCalculateScore(data) {
+        const edu = data.education;
+        let cgpa = parseFloat(edu.cgpa) || 0;
+        let twelfth = parseFloat(edu.twelfth) || 0;
+        let tenth = parseFloat(edu.tenth) || 0;
+        const cgpaScore = Math.min(40, Math.round(cgpa / 10 * 40 * 10) / 10);
+        const twelfthScore = Math.min(25, Math.round(twelfth / 100 * 25 * 10) / 10);
+        const tenthScore = Math.min(20, Math.round(tenth / 100 * 20 * 10) / 10);
+        const bonus = Math.min(5, data.skills.length * 0.5) + Math.min(5, data.projects.length * 1.5) + Math.min(3, data.internships.length * 1.5) + Math.min(2, data.achievements.length * 0.5);
+        const bonusScore = Math.min(15, Math.round(bonus * 10) / 10);
+        const total = Math.min(100, Math.round((cgpaScore + twelfthScore + tenthScore + bonusScore) * 10) / 10);
+        let grade, label;
+        if (total >= 90) { grade = 'A+'; label = 'Exceptional'; }
+        else if (total >= 80) { grade = 'A'; label = 'Strong'; }
+        else if (total >= 70) { grade = 'B+'; label = 'Good'; }
+        else if (total >= 60) { grade = 'B'; label = 'Average'; }
+        else if (total >= 50) { grade = 'C'; label = 'Below Average'; }
+        else { grade = 'D'; label = 'Needs Improvement'; }
+        return { total, grade, label, breakdown: { 'CGPA': { raw: cgpa, max: 40, score: cgpaScore }, '12th Marks': { raw: twelfth, max: 25, score: twelfthScore }, '10th Marks': { raw: tenth, max: 20, score: tenthScore }, 'Bonus (Skills/Projects)': { raw: null, max: 15, score: bonusScore } } };
+      }
+
+      function rwGetCourses(score, targetRole, userSkills) {
+        const skillsLower = userSkills.map(s => s.toLowerCase());
+        const recs = [];
+        if (targetRole && RW_MARKET[targetRole]) {
+          const ms = RW_MARKET[targetRole].skills;
+          Object.entries(ms).sort((a, b) => b[1] - a[1]).forEach(([skill, pct]) => {
+            if (!skillsLower.includes(skill.toLowerCase()) && pct >= 60 && RW_COURSES[skill]) {
+              RW_COURSES[skill].slice(0, 1).forEach(c => recs.push({ ...c, skill, market_pct: pct, reason: `${pct}% of placed ${targetRole}s have ${skill} — you don't` }));
+            }
+          });
+        }
+        ['DSA', 'Python'].forEach(s => {
+          if (!skillsLower.includes(s.toLowerCase()) && RW_COURSES[s] && !recs.find(r => r.title === RW_COURSES[s][0].title)) {
+            recs.push({ ...RW_COURSES[s][0], skill: s, market_pct: null, reason: `${s} is expected by most recruiters` });
+          }
+        });
+        return recs.slice(0, 6);
+      }
+
+      function rwGetLearningPath(score, targetRole, userSkills) {
+        const skillsLower = userSkills.map(s => s.toLowerCase());
+        const m = RW_MARKET[targetRole] || RW_MARKET['Software Developer'];
+        const missing = Object.entries(m.skills).sort((a, b) => b[1] - a[1]).filter(([s]) => !skillsLower.includes(s.toLowerCase())).map(([s]) => s);
+        const m0 = missing[0] || 'DSA'; const m1 = missing[1] || 'System Design';
+        if (score < 60) return [
+          { week: 'Week 1–2', title: 'Academic Foundation', desc: 'Revise core subjects to improve CGPA; seek supplemental assignments from professors', status: 'current' },
+          { week: 'Week 3–4', title: `Learn ${m0}`, desc: `Start beginner tutorials + solve 30 LeetCode Easy problems`, status: 'upcoming' },
+          { week: 'Month 2', title: 'Build a Starter Project', desc: 'Apply skills in a small end-to-end project to populate your portfolio', status: 'upcoming' },
+          { week: 'Month 3', title: 'Internship Hunt', desc: 'Apply on Internshala, LinkedIn, and company portals for off-campus internships', status: 'upcoming' },
+        ];
+        if (score < 80) return [
+          { week: 'Week 1–2', title: `Strengthen ${m0}`, desc: 'Complete 50 LeetCode problems (Easy → Medium) and understand patterns', status: 'current' },
+          { week: 'Week 3–4', title: `Learn ${m1}`, desc: 'Take a structured online course and implement two mini-projects', status: 'upcoming' },
+          { week: 'Month 2', title: 'Portfolio Project', desc: `Build a full project using ${m0} + ${m1} with a proper README on GitHub`, status: 'upcoming' },
+          { week: 'Month 3', title: 'Mock Interviews + Apply', desc: '10 mock interviews on Pramp/InterviewBit, apply to 20+ companies', status: 'upcoming' },
+        ];
+        return [
+          { week: 'Week 1–2', title: 'Advanced DSA & System Design', desc: 'Solve 100 Medium-Hard LeetCode problems; study HLD/LLD design patterns', status: 'current' },
+          { week: 'Week 3–4', title: `Master ${m0}`, desc: 'Get a certification or build a production-grade project to prove expertise', status: 'upcoming' },
+          { week: 'Month 2', title: 'Open Source + FAANG Prep', desc: 'Contribute to 2 open-source repos; study company-specific prep on Glassdoor', status: 'upcoming' },
+          { week: 'Month 3', title: 'Referrals + Dream Applications', desc: 'Apply via referral network; reach out to employees via LinkedIn cold-DM', status: 'upcoming' },
+        ];
+      }
+
+      async function rwLoadDashboard() {
+        const targetRole = document.getElementById('rw-target-role').value;
+        if (!targetRole) { toast('Select a Role', 'Please select a target role first', 'e'); return; }
+        const data = rwCollectData();
+        document.getElementById('rw-dash-loading').classList.remove('hidden');
+        document.getElementById('rw-dash-content').classList.add('hidden');
+        // Small delay to show loader, then calculate locally
+        await new Promise(r => setTimeout(r, 600));
+        try {
+          const score = rwCalculateScore(data);
+          const courses = rwGetCourses(score.total, targetRole, data.skills);
+          const learning_path = rwGetLearningPath(score.total, targetRole, data.skills);
+          let market_intel = null;
+          if (RW_MARKET[targetRole]) {
+            const m = RW_MARKET[targetRole];
+            const skillsLower = data.skills.map(s => s.toLowerCase());
+            market_intel = { role: targetRole, avg_cgpa: m.avg_cgpa, avg_package: m.avg_package, placed_count: m.placed_count, skill_analysis: Object.entries(m.skills).sort((a, b) => b[1] - a[1]).map(([skill, pct]) => ({ skill, market_pct: pct, have: skillsLower.includes(skill.toLowerCase()) })) };
+          }
+          rwRenderDashboard({ score, courses, learning_path, market_intel });
+          document.getElementById('rw-dash-content').classList.remove('hidden');
+        } catch (e) { toast('Error', e.message, 'e'); }
+        finally { document.getElementById('rw-dash-loading').classList.add('hidden'); }
+      }
+
+      function rwRenderDashboard({ score, courses, learning_path, market_intel }) {
+        const total = score.total;
+        const ring = document.getElementById('rw-score-ring');
+        const circumference = 301.6;
+        ring.style.strokeDashoffset = circumference;
+        const color = total >= 80 ? '#22c55e' : total >= 60 ? '#f59e0b' : '#f43f5e';
+        ring.style.stroke = color;
+        setTimeout(() => { ring.style.strokeDashoffset = circumference - (total / 100) * circumference; }, 100);
+        document.getElementById('rw-score-text').textContent = total;
+        document.getElementById('rw-score-label').textContent = score.label;
+        const gradeBadge = document.getElementById('rw-score-grade');
+        gradeBadge.textContent = score.grade;
+        gradeBadge.style.background = color;
+
+        const barsEl = document.getElementById('rw-score-bars');
+        barsEl.innerHTML = '';
+        Object.entries(score.breakdown).forEach(([label, val]) => {
+          const pct = Math.round((val.score / val.max) * 100);
+          const raw = val.raw !== null ? ` (${val.raw}${label.includes('Marks') ? '%' : label.includes('CGPA') ? ' CGPA' : ''})` : '';
+          const barColor = pct >= 75 ? '#22c55e' : pct >= 50 ? '#f59e0b' : '#f43f5e';
+          barsEl.innerHTML += `<div class="rw-bar-row"><div class="rw-bar-lbl">${label}${raw}</div><div class="rw-bar-track"><div class="rw-bar-fill" style="background:${barColor}" data-width="${pct}%"></div></div><div class="rw-bar-score">${val.score}/${val.max}</div></div>`;
+        });
+        setTimeout(() => { document.querySelectorAll('.rw-bar-fill').forEach(el => el.style.width = el.dataset.width); }, 200);
+        const tip = document.getElementById('rw-score-tip');
+        if (total >= 80) tip.innerHTML = `✅ <strong>Strong profile!</strong> Focus on top companies and system design prep.`;
+        else if (total >= 60) tip.innerHTML = `⚡ <strong>Good profile!</strong> Bridge skill gaps with the courses below.`;
+        else tip.innerHTML = `📘 <strong>Needs improvement.</strong> Focus on academics first, then build strong projects.`;
+
+        if (market_intel) {
+          document.getElementById('rw-market-section').classList.remove('hidden');
+          document.getElementById('rw-market-role').textContent = market_intel.role;
+          document.getElementById('rw-market-stats').innerHTML = `
+            <div class="rw-mstat"><div class="rw-mstat-num">${market_intel.avg_cgpa}</div><div class="rw-mstat-lbl">Avg CGPA of placed students</div></div>
+            <div class="rw-mstat"><div class="rw-mstat-num">${market_intel.avg_package}</div><div class="rw-mstat-lbl">Average package offered</div></div>
+            <div class="rw-mstat"><div class="rw-mstat-num">${market_intel.placed_count.toLocaleString()}+</div><div class="rw-mstat-lbl">Students placed last year</div></div>`;
+          const missing = market_intel.skill_analysis.filter(s => !s.have && s.market_pct >= 60);
+          if (missing.length > 0) {
+            const top = missing[0];
+            document.getElementById('rw-market-banner').innerHTML = `<span>💡</span><span>Targeting <strong>${market_intel.role}</strong>: <strong>${top.market_pct}%</strong> of placed students had <strong>${top.skill}</strong> — you don't. See the learning path below.</span>`;
+          } else {
+            document.getElementById('rw-market-banner').innerHTML = `<span>🌟</span><span>Your skills align well with <strong>${market_intel.role}</strong> requirements! Focus on depth and projects.</span>`;
+          }
+          document.getElementById('rw-skill-gap-grid').innerHTML = market_intel.skill_analysis.map(s => `
+            <div class="rw-skill-row">
+              <div class="rw-skill-name">${s.skill}</div>
+              <div class="rw-skill-bar-wrap"><div class="rw-skill-bar" data-width="${s.market_pct}%" data-color="${s.have ? '#22c55e' : '#f43f5e'}"></div></div>
+              <div class="rw-skill-pct">${s.market_pct}%</div>
+              <div class="rw-skill-badge ${s.have ? 'have' : 'missing'}">${s.have ? '✓ You have it' : '✗ Missing'}</div>
+            </div>`).join('');
+          setTimeout(() => { document.querySelectorAll('.rw-skill-bar').forEach(el => { el.style.width = el.dataset.width; el.style.background = el.dataset.color; }); }, 300);
+        } else {
+          document.getElementById('rw-market-section').classList.add('hidden');
+        }
+
+        document.getElementById('rw-path-timeline').innerHTML = learning_path.map((step, i) => `
+          <div class="rw-path-step">
+            <div class="rw-path-node ${step.status}">${i + 1}</div>
+            <div><div class="rw-path-week">${step.week}</div><div class="rw-path-title">${step.title}</div><div class="rw-path-desc">${step.desc}</div></div>
+          </div>`).join('');
+
+        const noteEl = document.getElementById('rw-courses-note');
+        noteEl.innerHTML = total < 80 ? `<div class="rw-courses-alert">⚠️ Score: <strong>${total}/100</strong>. These courses will boost your resume and fill skill gaps.</div>` : `<div class="rw-courses-alert rw-courses-alert-green">✅ Strong profile! These courses will help you stand out even more.</div>`;
+
+        const gridEl = document.getElementById('rw-courses-grid');
+        if (!courses.length) { gridEl.innerHTML = `<p style="color:var(--text2);font-size:13px;">No specific courses needed — your profile matches market requirements well!</p>`; }
+        else { gridEl.innerHTML = courses.map(c => `<a href="${c.url}" target="_blank" class="rw-course-card"><div class="rw-course-badge">${c.platform}</div><div class="rw-course-title">${c.title}</div><div class="rw-course-meta">⭐ ${c.rating} · ⏱ ${c.duration}${c.market_pct ? ` · 🔥 ${c.market_pct}% demand` : ''}</div><div class="rw-course-reason">${c.reason}</div><div class="rw-course-cta">View Course →</div></a>`).join(''); }
+      }
+
+      function rwCopyResumeData() {
+        const data = rwCollectData();
+        const text = JSON.stringify(data, null, 2);
+        navigator.clipboard.writeText(text).then(() => {
+          document.getElementById('rw-copy-success').classList.remove('hidden');
+          toast('Copied!', 'Resume data copied to clipboard', 's');
+          setTimeout(() => document.getElementById('rw-copy-success').classList.add('hidden'), 4000);
+        }).catch(() => toast('Error', 'Could not copy to clipboard', 'e'));
+      }
+
+      async function rwCompareResume() {
+        const company = document.getElementById('rw-target-company').value;
+        const role = document.getElementById('rw-cmp-role').value;
+        const pkg = document.getElementById('rw-target-pkg').value;
+        if (!company || !role || !pkg) { toast('Required', 'Please fill in company, role and package', 'e'); return; }
+        const data = rwCollectData();
+        if (!data.name) { toast('Required', 'Please fill your name in Step 1 first', 'e'); return; }
+
+        document.getElementById('rw-compare-results').classList.add('hidden');
+        document.getElementById('rw-compare-loading').classList.remove('hidden');
+        document.getElementById('rw-compare-btn').disabled = true;
+
+        try {
+          const res = await api('POST', '/api/resume/compare', {
+            resume_data: { name: data.name, cgpa: data.education.cgpa, skills: data.skills, projects: data.projects, internships: data.internships, achievements: data.achievements },
+            company, role, package: pkg
+          });
+          if (res.success) { rwDisplayComparison(res.comparison); }
+          else throw new Error(res.error || 'AI comparison failed');
+        } catch (e) {
+          toast('AI Error', e.message, 'e');
+        } finally {
+          document.getElementById('rw-compare-loading').classList.add('hidden');
+          document.getElementById('rw-compare-btn').disabled = false;
+        }
+      }
+
+      function rwDisplayComparison(data) {
+        const score = data.match_score || 0;
+        document.getElementById('rw-match-score').textContent = score;
+        const circle = document.querySelector('.rw-match-circle');
+        circle.style.background = score >= 75 ? 'linear-gradient(135deg,#22c55e,#16a34a)' : score >= 50 ? 'linear-gradient(135deg,#f59e0b,#d97706)' : 'linear-gradient(135deg,#f43f5e,#e11d48)';
+        const bench = data.benchmark || {};
+        document.getElementById('rw-benchmark-content').innerHTML = `<p style="font-size:13px;color:var(--text2);line-height:1.6;">${bench.summary || ''}</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+            <span style="font-size:12px;background:var(--surface3);padding:3px 10px;border-radius:20px;"><strong>CGPA:</strong> ${bench.cgpa || 'N/A'}</span>
+            <span style="font-size:12px;background:var(--surface3);padding:3px 10px;border-radius:20px;"><strong>Projects:</strong> ${bench.projects_count || 'N/A'}</span>
+            <span style="font-size:12px;background:var(--surface3);padding:3px 10px;border-radius:20px;"><strong>Internships:</strong> ${bench.internships || 'N/A'}</span>
+          </div>${bench.key_skills ? `<div style="margin-top:8px;">${bench.key_skills.map(s => `<span style="font-size:11px;background:var(--surface3);padding:2px 8px;border-radius:6px;margin:2px;display:inline-block;">${s}</span>`).join('')}</div>` : ''}`;
+        document.getElementById('rw-strengths-list').innerHTML = (data.strengths || []).map(s => `<li>${s}</li>`).join('');
+        document.getElementById('rw-gaps-list').innerHTML = (data.gaps || []).map(g => `<li>${g}</li>`).join('');
+        document.getElementById('rw-action-list').innerHTML = (data.action_items || []).map(a => `<li>${a}</li>`).join('');
+        document.getElementById('rw-verdict-text').textContent = data.verdict || '';
+        document.getElementById('rw-compare-results').classList.remove('hidden');
+        document.getElementById('rw-compare-results').scrollIntoView({ behavior: 'smooth' });
+      }
+
     })();
   </script>
 
