@@ -230,7 +230,8 @@ app.post('/api/auth/google', async (req, res) => {
       name: student.name
     };
 
-    res.json({ success: true, role: 'student', name: student.name });
+    const profileComplete = !!(student.profile && student.profile.gender);
+    res.json({ success: true, role: 'student', name: student.name, usn: student.usn, needsProfile: !profileComplete });
 
   } catch (err) {
     console.error(err);
