@@ -43,7 +43,7 @@ function geminiRequest(systemPrompt, userMessages, maxTokens) {
           if (parsed.error) { reject(new Error(parsed.error.message || JSON.stringify(parsed.error))); return; }
           const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
           resolve(text);
-        } catch(e) { reject(new Error('Gemini JSON parse error: ' + data.substring(0, 200))); }
+        } catch (e) { reject(new Error('Gemini JSON parse error: ' + data.substring(0, 200))); }
       });
     });
     req.on('error', reject);
@@ -74,7 +74,7 @@ function openRouterRequest(body) {
       resp.on('data', chunk => data += chunk);
       resp.on('end', () => {
         try { resolve(JSON.parse(data)); }
-        catch(e) { reject(new Error('OpenRouter JSON error: ' + data.substring(0, 200))); }
+        catch (e) { reject(new Error('OpenRouter JSON error: ' + data.substring(0, 200))); }
       });
     });
     req.on('error', reject);
@@ -96,148 +96,148 @@ mongoose.connect(MONGO_URI)
 
 // ─── MODELS ──────────────────────────────────────────────────────────────────
 const Student = mongoose.model('Student', new mongoose.Schema({
-  name:              { type: String, required: true },
-  usn:               { type: String, required: true, unique: true },
-  branch:            { type: String, required: true },
-  year:              { type: Number, required: true },
-  cgpa:              { type: Number, required: true },
-  backlogs:          { type: Number, default: 0 },
-  email:             String,
-  phone:             String,
+  name: { type: String, required: true },
+  usn: { type: String, required: true, unique: true },
+  branch: { type: String, required: true },
+  year: { type: Number, required: true },
+  cgpa: { type: Number, required: true },
+  backlogs: { type: Number, default: 0 },
+  email: String,
+  phone: String,
   interestedCompanies: [String],
-  assessmentScores:  [{ assessmentId: mongoose.Schema.Types.ObjectId, score: Number, maxScore: Number, submittedAt: Date }],
-  driveApplications: [{ driveId: mongoose.Schema.Types.ObjectId, status: { type: String, enum: ['eligible','applied','shortlisted','selected','rejected'], default: 'eligible' }, ranking: { type: String, enum: ['Best','Better','Average'] } }],
-  password:          { type: String, default: 'student123' },
+  assessmentScores: [{ assessmentId: mongoose.Schema.Types.ObjectId, score: Number, maxScore: Number, submittedAt: Date }],
+  driveApplications: [{ driveId: mongoose.Schema.Types.ObjectId, status: { type: String, enum: ['eligible', 'applied', 'shortlisted', 'selected', 'rejected'], default: 'eligible' }, ranking: { type: String, enum: ['Best', 'Better', 'Average'] } }],
+  password: { type: String, default: 'student123' },
   // Extended profile from Google Form
   profile: {
-    gender:           String,
-    personalEmail:    String,
-    collegeEmail:     String,
-    marks10th:        String,
-    board10th:        String,
-    marks12th:        String,
-    board12th:        String,
-    diplomaPct:       String,
-    diplomaBoard:     String,
-    ongoingBacklogs:  Number,
-    historyBacklogs:  Number,
-    presentAddress:   String,
+    gender: String,
+    personalEmail: String,
+    collegeEmail: String,
+    marks10th: String,
+    board10th: String,
+    marks12th: String,
+    board12th: String,
+    diplomaPct: String,
+    diplomaBoard: String,
+    ongoingBacklogs: Number,
+    historyBacklogs: Number,
+    presentAddress: String,
     permanentAddress: String,
-    aadharNo:         String
+    aadharNo: String
   },
-  createdAt:         { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 }));
 
 const Drive = mongoose.model('Drive', new mongoose.Schema({
-  companyName:      { type: String, required: true },
-  description:      String,
-  minCGPA:          { type: Number, required: true },
-  maxBacklogs:      { type: Number, default: 0 },
+  companyName: { type: String, required: true },
+  description: String,
+  minCGPA: { type: Number, required: true },
+  maxBacklogs: { type: Number, default: 0 },
   eligibleBranches: [String],
-  eligibleYear:     [Number],
+  eligibleYear: [Number],
   minAssessmentScore: { type: Number, default: 0 },
-  driveDate:        Date,
-  deadline:         Date,
-  package:          String,
-  location:         String,
-  status:           { type: String, enum: ['upcoming','active','completed'], default: 'upcoming' },
-  eligibleCount:    { type: Number, default: 0 },
-  createdAt:        { type: Date, default: Date.now }
+  driveDate: Date,
+  deadline: Date,
+  package: String,
+  location: String,
+  status: { type: String, enum: ['upcoming', 'active', 'completed'], default: 'upcoming' },
+  eligibleCount: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now }
 }));
 
 const Assessment = mongoose.model('Assessment', new mongoose.Schema({
-  title:       { type: String, required: true },
-  type:        { type: String, default: 'Mixed' },
-  categories:  [String],
-  subTopics:   [String],
-  driveId:     mongoose.Schema.Types.ObjectId,
-  questions:   [{ question: String, options: [String], correctAnswer: Number, marks: { type: Number, default: 1 }, topic: String }],
-  timeLimit:   { type: Number, default: 30 },
-  totalMarks:  Number,
-  isActive:    { type: Boolean, default: false },
+  title: { type: String, required: true },
+  type: { type: String, default: 'Mixed' },
+  categories: [String],
+  subTopics: [String],
+  driveId: mongoose.Schema.Types.ObjectId,
+  questions: [{ question: String, options: [String], correctAnswer: Number, marks: { type: Number, default: 1 }, topic: String }],
+  timeLimit: { type: Number, default: 30 },
+  totalMarks: Number,
+  isActive: { type: Boolean, default: false },
   aiGenerated: { type: Boolean, default: false },
-  createdAt:   { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 }));
 
 const AssignmentAttempt = mongoose.model('AssignmentAttempt', new mongoose.Schema({
-  assessmentId:   { type: mongoose.Schema.Types.ObjectId, required: true },
-  studentId:      { type: mongoose.Schema.Types.ObjectId, required: true },
-  usn:            { type: String, required: true },
-  studentName:    String,
-  status:         { type: String, enum: ['in-progress','submitted','malpractice'], default: 'in-progress' },
-  startedAt:      { type: Date, default: Date.now },
-  submittedAt:    Date,
-  answers:        mongoose.Schema.Types.Mixed,
-  score:          Number,
-  maxScore:       Number,
+  assessmentId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  studentId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  usn: { type: String, required: true },
+  studentName: String,
+  status: { type: String, enum: ['in-progress', 'submitted', 'malpractice'], default: 'in-progress' },
+  startedAt: { type: Date, default: Date.now },
+  submittedAt: Date,
+  answers: mongoose.Schema.Types.Mixed,
+  score: Number,
+  maxScore: Number,
   tabSwitchCount: { type: Number, default: 0 },
-  warnings:       { type: Number, default: 0 },
+  warnings: { type: Number, default: 0 },
   malpracticeLog: [{ event: String, timestamp: Date }],
-  isMalpractice:  { type: Boolean, default: false }
+  isMalpractice: { type: Boolean, default: false }
 }));
 
 const Notification = mongoose.model('Notification', new mongoose.Schema({
   studentId: mongoose.Schema.Types.ObjectId,
-  usn:       String,
-  title:     String,
-  message:   String,
-  type:      { type: String, enum: ['drive','assessment','shortlist','general'], default: 'general' },
-  driveId:   mongoose.Schema.Types.ObjectId,
-  isRead:    { type: Boolean, default: false },
+  usn: String,
+  title: String,
+  message: String,
+  type: { type: String, enum: ['drive', 'assessment', 'shortlist', 'general'], default: 'general' },
+  driveId: mongoose.Schema.Types.ObjectId,
+  isRead: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 }));
 
 // ─── ALUMNI MODELS ───────────────────────────────────────────────────────────
 const Alumni = mongoose.model('Alumni', new mongoose.Schema({
-  name:        { type: String, required: true },
-  email:       { type: String, required: true, unique: true },
-  company:     { type: String, default: '' },
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  company: { type: String, default: '' },
   designation: { type: String, default: '' },
-  linkedin:    { type: String, default: '' },
-  github:      { type: String, default: '' },
-  gmail:       { type: String, default: '' },
-  branch:      { type: String, default: '' },
-  gradYear:    { type: Number, default: 0 },
+  linkedin: { type: String, default: '' },
+  github: { type: String, default: '' },
+  gmail: { type: String, default: '' },
+  branch: { type: String, default: '' },
+  gradYear: { type: Number, default: 0 },
   profileComplete: { type: Boolean, default: false },
-  createdAt:   { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 }));
 
 const AlumniGroup = mongoose.model('AlumniGroup', new mongoose.Schema({
-  name:        { type: String, required: true },
-  companyTag:  { type: String, required: true },
-  createdBy:   { type: String, required: true },
+  name: { type: String, required: true },
+  companyTag: { type: String, required: true },
+  createdBy: { type: String, required: true },
   creatorName: { type: String, required: true },
   creatorRole: { type: String, default: 'student' },
-  members:     [{
-    userId:   String,
-    name:     String,
-    role:     { type: String, enum: ['student','alumni','admin'], default: 'student' },
+  members: [{
+    userId: String,
+    name: String,
+    role: { type: String, enum: ['student', 'alumni', 'admin'], default: 'student' },
     joinedAt: { type: Date, default: Date.now }
   }],
-  createdAt:   { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 }));
 
 const GroupMessage = mongoose.model('GroupMessage', new mongoose.Schema({
-  groupId:    { type: mongoose.Schema.Types.ObjectId, required: true },
-  section:    { type: String, enum: ['general','resource'], default: 'general' },
-  senderId:   { type: String, required: true },
+  groupId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  section: { type: String, enum: ['general', 'resource'], default: 'general' },
+  senderId: { type: String, required: true },
   senderName: { type: String, required: true },
-  senderRole: { type: String, enum: ['student','alumni','admin'], default: 'student' },
-  content:    { type: String, default: '' },
-  fileName:   { type: String, default: '' },
-  fileUrl:    { type: String, default: '' },
-  createdAt:  { type: Date, default: Date.now }
+  senderRole: { type: String, enum: ['student', 'alumni', 'admin'], default: 'student' },
+  content: { type: String, default: '' },
+  fileName: { type: String, default: '' },
+  fileUrl: { type: String, default: '' },
+  createdAt: { type: Date, default: Date.now }
 }));
 
 const PrivateMessage = mongoose.model('PrivateMessage', new mongoose.Schema({
-  groupId:    { type: mongoose.Schema.Types.ObjectId, required: true },
-  studentId:  { type: String, required: true },
-  alumniId:   { type: String, required: true },
-  senderId:   { type: String, required: true },
-  senderRole: { type: String, enum: ['student','alumni'], required: true },
+  groupId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  studentId: { type: String, required: true },
+  alumniId: { type: String, required: true },
+  senderId: { type: String, required: true },
+  senderRole: { type: String, enum: ['student', 'alumni'], required: true },
   senderName: { type: String, required: true },
-  content:    { type: String, required: true },
-  createdAt:  { type: Date, default: Date.now }
+  content: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
 }));
 
 // ─── MIDDLEWARE ──────────────────────────────────────────────────────────────
@@ -485,88 +485,88 @@ app.post('/api/quiz/generate', async (req, res) => {
     // ── LARGE QUESTION BANK ──────────────────────────────────────────────────
     const BANK = {
       Aptitude: [
-        { question: "If a train travels 360 km in 4 hours, what is its speed in m/s?", options: ["25 m/s","50 m/s","90 m/s","100 m/s"], correctAnswer: 0, topic: "Speed & Distance" },
-        { question: "A can do a work in 15 days, B in 20 days. Together they finish in?", options: ["8 days","8.57 days","9 days","10 days"], correctAnswer: 1, topic: "Time & Work" },
-        { question: "What is 15% of 480?", options: ["62","68","72","76"], correctAnswer: 2, topic: "Percentages" },
-        { question: "If 6 men can do a job in 10 days, how many men are needed to do it in 5 days?", options: ["10","12","14","16"], correctAnswer: 1, topic: "Time & Work" },
-        { question: "A sum doubles in 10 years at simple interest. Rate of interest per annum?", options: ["8%","10%","12%","15%"], correctAnswer: 1, topic: "Simple Interest" },
-        { question: "Find the next number: 2, 6, 12, 20, 30, ?", options: ["40","42","44","46"], correctAnswer: 1, topic: "Number Series" },
-        { question: "Find the odd one out: 2, 3, 5, 7, 9, 11", options: ["2","9","3","5"], correctAnswer: 1, topic: "Odd One Out" },
-        { question: "What is the LCM of 12 and 18?", options: ["24","36","48","72"], correctAnswer: 1, topic: "LCM & HCF" },
-        { question: "A shopkeeper sells a product at 20% profit. If CP is ₹500, what is SP?", options: ["₹580","₹600","₹620","₹640"], correctAnswer: 1, topic: "Profit & Loss" },
-        { question: "If ABCD = 1234, then DCBA = ?", options: ["4321","3241","4312","3421"], correctAnswer: 0, topic: "Coding" },
-        { question: "Average of first 10 natural numbers?", options: ["5","5.5","6","6.5"], correctAnswer: 1, topic: "Averages" },
-        { question: "A pipe fills a tank in 4 hrs, another drains it in 8 hrs. Together?", options: ["6 hrs","7 hrs","8 hrs","10 hrs"], correctAnswer: 2, topic: "Pipes & Cisterns" },
-        { question: "Ratio of 3:4 means if one part is 75, other is?", options: ["90","100","112","125"], correctAnswer: 1, topic: "Ratio & Proportion" },
-        { question: "Which is the smallest prime number?", options: ["0","1","2","3"], correctAnswer: 2, topic: "Number Theory" },
-        { question: "Find the missing: 1, 4, 9, 16, ?, 36", options: ["20","25","28","30"], correctAnswer: 1, topic: "Number Series" },
-        { question: "If 40% of a number is 120, the number is?", options: ["250","300","350","400"], correctAnswer: 1, topic: "Percentages" },
-        { question: "Speed of boat in still water is 10 km/h, stream speed 2 km/h. Upstream speed?", options: ["6","8","10","12"], correctAnswer: 1, topic: "Boats & Streams" },
-        { question: "How many ways to arrange letters in 'DOG'?", options: ["3","4","6","8"], correctAnswer: 2, topic: "Permutations" },
-        { question: "Compound interest on ₹1000 at 10% for 2 years?", options: ["₹200","₹205","₹210","₹215"], correctAnswer: 2, topic: "Compound Interest" },
-        { question: "If today is Monday, what day is 100 days later?", options: ["Wednesday","Thursday","Friday","Saturday"], correctAnswer: 1, topic: "Calendar" }
+        { question: "If a train travels 360 km in 4 hours, what is its speed in m/s?", options: ["25 m/s", "50 m/s", "90 m/s", "100 m/s"], correctAnswer: 0, topic: "Speed & Distance" },
+        { question: "A can do a work in 15 days, B in 20 days. Together they finish in?", options: ["8 days", "8.57 days", "9 days", "10 days"], correctAnswer: 1, topic: "Time & Work" },
+        { question: "What is 15% of 480?", options: ["62", "68", "72", "76"], correctAnswer: 2, topic: "Percentages" },
+        { question: "If 6 men can do a job in 10 days, how many men are needed to do it in 5 days?", options: ["10", "12", "14", "16"], correctAnswer: 1, topic: "Time & Work" },
+        { question: "A sum doubles in 10 years at simple interest. Rate of interest per annum?", options: ["8%", "10%", "12%", "15%"], correctAnswer: 1, topic: "Simple Interest" },
+        { question: "Find the next number: 2, 6, 12, 20, 30, ?", options: ["40", "42", "44", "46"], correctAnswer: 1, topic: "Number Series" },
+        { question: "Find the odd one out: 2, 3, 5, 7, 9, 11", options: ["2", "9", "3", "5"], correctAnswer: 1, topic: "Odd One Out" },
+        { question: "What is the LCM of 12 and 18?", options: ["24", "36", "48", "72"], correctAnswer: 1, topic: "LCM & HCF" },
+        { question: "A shopkeeper sells a product at 20% profit. If CP is ₹500, what is SP?", options: ["₹580", "₹600", "₹620", "₹640"], correctAnswer: 1, topic: "Profit & Loss" },
+        { question: "If ABCD = 1234, then DCBA = ?", options: ["4321", "3241", "4312", "3421"], correctAnswer: 0, topic: "Coding" },
+        { question: "Average of first 10 natural numbers?", options: ["5", "5.5", "6", "6.5"], correctAnswer: 1, topic: "Averages" },
+        { question: "A pipe fills a tank in 4 hrs, another drains it in 8 hrs. Together?", options: ["6 hrs", "7 hrs", "8 hrs", "10 hrs"], correctAnswer: 2, topic: "Pipes & Cisterns" },
+        { question: "Ratio of 3:4 means if one part is 75, other is?", options: ["90", "100", "112", "125"], correctAnswer: 1, topic: "Ratio & Proportion" },
+        { question: "Which is the smallest prime number?", options: ["0", "1", "2", "3"], correctAnswer: 2, topic: "Number Theory" },
+        { question: "Find the missing: 1, 4, 9, 16, ?, 36", options: ["20", "25", "28", "30"], correctAnswer: 1, topic: "Number Series" },
+        { question: "If 40% of a number is 120, the number is?", options: ["250", "300", "350", "400"], correctAnswer: 1, topic: "Percentages" },
+        { question: "Speed of boat in still water is 10 km/h, stream speed 2 km/h. Upstream speed?", options: ["6", "8", "10", "12"], correctAnswer: 1, topic: "Boats & Streams" },
+        { question: "How many ways to arrange letters in 'DOG'?", options: ["3", "4", "6", "8"], correctAnswer: 2, topic: "Permutations" },
+        { question: "Compound interest on ₹1000 at 10% for 2 years?", options: ["₹200", "₹205", "₹210", "₹215"], correctAnswer: 2, topic: "Compound Interest" },
+        { question: "If today is Monday, what day is 100 days later?", options: ["Wednesday", "Thursday", "Friday", "Saturday"], correctAnswer: 1, topic: "Calendar" }
       ],
       "Logical Reasoning": [
-        { question: "All cats are animals. Some animals are dogs. Which is definitely true?", options: ["Some cats are dogs","All animals are cats","Some cats may not be animals","All dogs are animals"], correctAnswer: 3, topic: "Syllogisms" },
-        { question: "DOCTOR : HOSPITAL :: TEACHER : ?", options: ["BOOK","SCHOOL","STUDENT","DESK"], correctAnswer: 1, topic: "Analogies" },
-        { question: "If A > B, B > C, then?", options: ["C > A","A > C","A = C","C > B"], correctAnswer: 1, topic: "Inequalities" },
-        { question: "Find the odd one out: Apple, Mango, Carrot, Orange", options: ["Apple","Mango","Carrot","Orange"], correctAnswer: 2, topic: "Classification" },
-        { question: "A is B's brother. B is C's mother. How is A related to C?", options: ["Father","Uncle","Grandfather","Brother"], correctAnswer: 1, topic: "Blood Relations" },
-        { question: "Point A is 5km North of B. C is 3km East of B. A is ? of C.", options: ["North-East","North-West","South-East","South-West"], correctAnswer: 1, topic: "Direction Sense" },
-        { question: "6th from left is 14th from right in a row. Total students?", options: ["18","19","20","21"], correctAnswer: 1, topic: "Ordering" },
-        { question: "If FIRE = 6935, CODE = ?", options: ["3145","3154","1345","5314"], correctAnswer: 0, topic: "Coding-Decoding" },
-        { question: "Mirror image of 'p' is?", options: ["b","d","q","p"], correctAnswer: 1, topic: "Mirror Images" },
-        { question: "Statement: All pens are books. Conclusion: Some books are pens.", options: ["True","False","Uncertain","Partly true"], correctAnswer: 0, topic: "Syllogisms" },
-        { question: "Which figure completes the series: Circle, Square, Triangle, Circle, Square, ?", options: ["Circle","Square","Triangle","Pentagon"], correctAnswer: 2, topic: "Pattern" },
-        { question: "If 5 * 3 = 28 and 6 * 2 = 32, then 7 * 4 = ?", options: ["44","45","46","47"], correctAnswer: 0, topic: "Mathematical Puzzles" }
+        { question: "All cats are animals. Some animals are dogs. Which is definitely true?", options: ["Some cats are dogs", "All animals are cats", "Some cats may not be animals", "All dogs are animals"], correctAnswer: 3, topic: "Syllogisms" },
+        { question: "DOCTOR : HOSPITAL :: TEACHER : ?", options: ["BOOK", "SCHOOL", "STUDENT", "DESK"], correctAnswer: 1, topic: "Analogies" },
+        { question: "If A > B, B > C, then?", options: ["C > A", "A > C", "A = C", "C > B"], correctAnswer: 1, topic: "Inequalities" },
+        { question: "Find the odd one out: Apple, Mango, Carrot, Orange", options: ["Apple", "Mango", "Carrot", "Orange"], correctAnswer: 2, topic: "Classification" },
+        { question: "A is B's brother. B is C's mother. How is A related to C?", options: ["Father", "Uncle", "Grandfather", "Brother"], correctAnswer: 1, topic: "Blood Relations" },
+        { question: "Point A is 5km North of B. C is 3km East of B. A is ? of C.", options: ["North-East", "North-West", "South-East", "South-West"], correctAnswer: 1, topic: "Direction Sense" },
+        { question: "6th from left is 14th from right in a row. Total students?", options: ["18", "19", "20", "21"], correctAnswer: 1, topic: "Ordering" },
+        { question: "If FIRE = 6935, CODE = ?", options: ["3145", "3154", "1345", "5314"], correctAnswer: 0, topic: "Coding-Decoding" },
+        { question: "Mirror image of 'p' is?", options: ["b", "d", "q", "p"], correctAnswer: 1, topic: "Mirror Images" },
+        { question: "Statement: All pens are books. Conclusion: Some books are pens.", options: ["True", "False", "Uncertain", "Partly true"], correctAnswer: 0, topic: "Syllogisms" },
+        { question: "Which figure completes the series: Circle, Square, Triangle, Circle, Square, ?", options: ["Circle", "Square", "Triangle", "Pentagon"], correctAnswer: 2, topic: "Pattern" },
+        { question: "If 5 * 3 = 28 and 6 * 2 = 32, then 7 * 4 = ?", options: ["44", "45", "46", "47"], correctAnswer: 0, topic: "Mathematical Puzzles" }
       ],
       Technical: [
-        { question: "What is the time complexity of binary search?", options: ["O(n)","O(log n)","O(n²)","O(1)"], correctAnswer: 1, topic: "Algorithms" },
-        { question: "Which data structure uses LIFO principle?", options: ["Queue","Stack","Array","Linked List"], correctAnswer: 1, topic: "Data Structures" },
-        { question: "What does SQL stand for?", options: ["Structured Query Language","Simple Query Language","Standard Query Language","Sequential Query Language"], correctAnswer: 0, topic: "SQL" },
-        { question: "Which OOP concept allows a class to inherit from multiple classes?", options: ["Encapsulation","Multiple Inheritance","Polymorphism","Abstraction"], correctAnswer: 1, topic: "OOP" },
-        { question: "What is a primary key in a database?", options: ["A key that can be NULL","A unique identifier for each record","A foreign key reference","An index key"], correctAnswer: 1, topic: "DBMS" },
-        { question: "Which sorting algorithm has O(n log n) average time complexity?", options: ["Bubble Sort","Selection Sort","Merge Sort","Insertion Sort"], correctAnswer: 2, topic: "Algorithms" },
-        { question: "What does HTTP stand for?", options: ["HyperText Transfer Protocol","High Text Transfer Protocol","HyperText Transmission Protocol","High Transfer Text Protocol"], correctAnswer: 0, topic: "Networks" },
-        { question: "Which layer of OSI model is responsible for routing?", options: ["Data Link","Network","Transport","Session"], correctAnswer: 1, topic: "Networks" },
-        { question: "What is a deadlock in OS?", options: ["Process waiting forever","Memory overflow","CPU overload","Disk failure"], correctAnswer: 0, topic: "Operating Systems" },
-        { question: "Which of the following is not a type of JOIN in SQL?", options: ["INNER JOIN","OUTER JOIN","CROSS JOIN","CIRCULAR JOIN"], correctAnswer: 3, topic: "SQL" },
-        { question: "Time complexity of inserting into a hash table (average)?", options: ["O(1)","O(log n)","O(n)","O(n²)"], correctAnswer: 0, topic: "Data Structures" },
-        { question: "What is normalization in DBMS?", options: ["Adding redundancy","Reducing redundancy","Deleting records","Encrypting data"], correctAnswer: 1, topic: "DBMS" },
-        { question: "Which principle states a class should have only one reason to change?", options: ["Open/Closed","Liskov Substitution","Single Responsibility","Interface Segregation"], correctAnswer: 2, topic: "OOP" },
-        { question: "What does DFS stand for in graph traversal?", options: ["Data First Search","Depth First Search","Direct First Search","Deep File System"], correctAnswer: 1, topic: "Algorithms" },
-        { question: "What is a foreign key?", options: ["Key from another country","Key referencing primary key of another table","Unique key","Composite key"], correctAnswer: 1, topic: "DBMS" },
-        { question: "Which protocol is used for secure web communication?", options: ["HTTP","FTP","HTTPS","SMTP"], correctAnswer: 2, topic: "Networks" },
-        { question: "What is the output of: 5 & 3 in binary?", options: ["0","1","7","15"], correctAnswer: 1, topic: "Programming" },
-        { question: "Which data structure is best for implementing recursion?", options: ["Array","Queue","Stack","Heap"], correctAnswer: 2, topic: "Data Structures" },
-        { question: "What is virtual memory?", options: ["RAM extension using disk","Cache memory","ROM extension","Swap space only"], correctAnswer: 0, topic: "Operating Systems" },
-        { question: "What does API stand for?", options: ["Application Programming Interface","Application Process Integration","Automated Program Interface","Application Protocol Internet"], correctAnswer: 0, topic: "Programming" }
+        { question: "What is the time complexity of binary search?", options: ["O(n)", "O(log n)", "O(n²)", "O(1)"], correctAnswer: 1, topic: "Algorithms" },
+        { question: "Which data structure uses LIFO principle?", options: ["Queue", "Stack", "Array", "Linked List"], correctAnswer: 1, topic: "Data Structures" },
+        { question: "What does SQL stand for?", options: ["Structured Query Language", "Simple Query Language", "Standard Query Language", "Sequential Query Language"], correctAnswer: 0, topic: "SQL" },
+        { question: "Which OOP concept allows a class to inherit from multiple classes?", options: ["Encapsulation", "Multiple Inheritance", "Polymorphism", "Abstraction"], correctAnswer: 1, topic: "OOP" },
+        { question: "What is a primary key in a database?", options: ["A key that can be NULL", "A unique identifier for each record", "A foreign key reference", "An index key"], correctAnswer: 1, topic: "DBMS" },
+        { question: "Which sorting algorithm has O(n log n) average time complexity?", options: ["Bubble Sort", "Selection Sort", "Merge Sort", "Insertion Sort"], correctAnswer: 2, topic: "Algorithms" },
+        { question: "What does HTTP stand for?", options: ["HyperText Transfer Protocol", "High Text Transfer Protocol", "HyperText Transmission Protocol", "High Transfer Text Protocol"], correctAnswer: 0, topic: "Networks" },
+        { question: "Which layer of OSI model is responsible for routing?", options: ["Data Link", "Network", "Transport", "Session"], correctAnswer: 1, topic: "Networks" },
+        { question: "What is a deadlock in OS?", options: ["Process waiting forever", "Memory overflow", "CPU overload", "Disk failure"], correctAnswer: 0, topic: "Operating Systems" },
+        { question: "Which of the following is not a type of JOIN in SQL?", options: ["INNER JOIN", "OUTER JOIN", "CROSS JOIN", "CIRCULAR JOIN"], correctAnswer: 3, topic: "SQL" },
+        { question: "Time complexity of inserting into a hash table (average)?", options: ["O(1)", "O(log n)", "O(n)", "O(n²)"], correctAnswer: 0, topic: "Data Structures" },
+        { question: "What is normalization in DBMS?", options: ["Adding redundancy", "Reducing redundancy", "Deleting records", "Encrypting data"], correctAnswer: 1, topic: "DBMS" },
+        { question: "Which principle states a class should have only one reason to change?", options: ["Open/Closed", "Liskov Substitution", "Single Responsibility", "Interface Segregation"], correctAnswer: 2, topic: "OOP" },
+        { question: "What does DFS stand for in graph traversal?", options: ["Data First Search", "Depth First Search", "Direct First Search", "Deep File System"], correctAnswer: 1, topic: "Algorithms" },
+        { question: "What is a foreign key?", options: ["Key from another country", "Key referencing primary key of another table", "Unique key", "Composite key"], correctAnswer: 1, topic: "DBMS" },
+        { question: "Which protocol is used for secure web communication?", options: ["HTTP", "FTP", "HTTPS", "SMTP"], correctAnswer: 2, topic: "Networks" },
+        { question: "What is the output of: 5 & 3 in binary?", options: ["0", "1", "7", "15"], correctAnswer: 1, topic: "Programming" },
+        { question: "Which data structure is best for implementing recursion?", options: ["Array", "Queue", "Stack", "Heap"], correctAnswer: 2, topic: "Data Structures" },
+        { question: "What is virtual memory?", options: ["RAM extension using disk", "Cache memory", "ROM extension", "Swap space only"], correctAnswer: 0, topic: "Operating Systems" },
+        { question: "What does API stand for?", options: ["Application Programming Interface", "Application Process Integration", "Automated Program Interface", "Application Protocol Internet"], correctAnswer: 0, topic: "Programming" }
       ],
       Programming: [
-        { question: "What is a pointer in C?", options: ["Variable storing value","Variable storing address","Function","Array element"], correctAnswer: 1, topic: "C Programming" },
-        { question: "What is the size of int in a 64-bit system?", options: ["2 bytes","4 bytes","8 bytes","16 bytes"], correctAnswer: 1, topic: "C Programming" },
-        { question: "What is 'this' keyword in Java?", options: ["Refers to current class","Refers to parent class","Refers to static method","Refers to interface"], correctAnswer: 0, topic: "Java" },
-        { question: "Which keyword is used to prevent inheritance in Java?", options: ["static","abstract","final","private"], correctAnswer: 2, topic: "Java" },
-        { question: "What does print(type([])) output in Python?", options: ["<class 'tuple'>","<class 'list'>","<class 'dict'>","<class 'set'>"], correctAnswer: 1, topic: "Python" },
-        { question: "What is the correct way to declare a constant in JavaScript?", options: ["var","let","const","static"], correctAnswer: 2, topic: "JavaScript" },
-        { question: "Which Python data type is immutable?", options: ["List","Dictionary","Set","Tuple"], correctAnswer: 3, topic: "Python" },
-        { question: "What is method overloading?", options: ["Same name, different params","Same name, same params","Different names","Inheritance"], correctAnswer: 0, topic: "OOP" }
+        { question: "What is a pointer in C?", options: ["Variable storing value", "Variable storing address", "Function", "Array element"], correctAnswer: 1, topic: "C Programming" },
+        { question: "What is the size of int in a 64-bit system?", options: ["2 bytes", "4 bytes", "8 bytes", "16 bytes"], correctAnswer: 1, topic: "C Programming" },
+        { question: "What is 'this' keyword in Java?", options: ["Refers to current class", "Refers to parent class", "Refers to static method", "Refers to interface"], correctAnswer: 0, topic: "Java" },
+        { question: "Which keyword is used to prevent inheritance in Java?", options: ["static", "abstract", "final", "private"], correctAnswer: 2, topic: "Java" },
+        { question: "What does print(type([])) output in Python?", options: ["<class 'tuple'>", "<class 'list'>", "<class 'dict'>", "<class 'set'>"], correctAnswer: 1, topic: "Python" },
+        { question: "What is the correct way to declare a constant in JavaScript?", options: ["var", "let", "const", "static"], correctAnswer: 2, topic: "JavaScript" },
+        { question: "Which Python data type is immutable?", options: ["List", "Dictionary", "Set", "Tuple"], correctAnswer: 3, topic: "Python" },
+        { question: "What is method overloading?", options: ["Same name, different params", "Same name, same params", "Different names", "Inheritance"], correctAnswer: 0, topic: "OOP" }
       ],
       "HR Interview": [
-        { question: "What is the best answer for 'Tell me about yourself'?", options: ["Share personal life","Share professional background relevant to job","Repeat your resume","Talk about hobbies only"], correctAnswer: 1, topic: "HR Questions" },
-        { question: "When asked 'What is your greatest weakness?', you should?", options: ["Say you have no weakness","State a real weakness and how you're improving","Give a strength disguised as weakness","Avoid the question"], correctAnswer: 1, topic: "HR Questions" },
-        { question: "For 'Where do you see yourself in 5 years?', best response is?", options: ["Running the company","Vague answer","Career growth aligned with company goals","I don't know"], correctAnswer: 2, topic: "HR Questions" },
-        { question: "When negotiating salary you should?", options: ["Accept first offer","Research market rate and give a range","Demand highest possible","Avoid discussing salary"], correctAnswer: 1, topic: "Salary Negotiation" },
-        { question: "'Why should we hire you?' best approach?", options: ["Say you need the job","Highlight unique skills matching the JD","Compare yourself to others","Say you're the best"], correctAnswer: 1, topic: "HR Questions" },
-        { question: "What does STAR method stand for in interviews?", options: ["Skill, Task, Action, Result","Situation, Task, Action, Result","Strategy, Team, Achieve, Result","Skill, Timeline, Achievement, Role"], correctAnswer: 1, topic: "Interview Technique" },
-        { question: "Body language in an interview should be?", options: ["Casual and relaxed","Confident, open posture, eye contact","Formal and stiff","Aggressive"], correctAnswer: 1, topic: "Soft Skills" },
-        { question: "When asked 'Do you have questions for us?', you should?", options: ["Say No","Ask about salary immediately","Ask about team, role, and growth","Avoid questions"], correctAnswer: 2, topic: "HR Questions" }
+        { question: "What is the best answer for 'Tell me about yourself'?", options: ["Share personal life", "Share professional background relevant to job", "Repeat your resume", "Talk about hobbies only"], correctAnswer: 1, topic: "HR Questions" },
+        { question: "When asked 'What is your greatest weakness?', you should?", options: ["Say you have no weakness", "State a real weakness and how you're improving", "Give a strength disguised as weakness", "Avoid the question"], correctAnswer: 1, topic: "HR Questions" },
+        { question: "For 'Where do you see yourself in 5 years?', best response is?", options: ["Running the company", "Vague answer", "Career growth aligned with company goals", "I don't know"], correctAnswer: 2, topic: "HR Questions" },
+        { question: "When negotiating salary you should?", options: ["Accept first offer", "Research market rate and give a range", "Demand highest possible", "Avoid discussing salary"], correctAnswer: 1, topic: "Salary Negotiation" },
+        { question: "'Why should we hire you?' best approach?", options: ["Say you need the job", "Highlight unique skills matching the JD", "Compare yourself to others", "Say you're the best"], correctAnswer: 1, topic: "HR Questions" },
+        { question: "What does STAR method stand for in interviews?", options: ["Skill, Task, Action, Result", "Situation, Task, Action, Result", "Strategy, Team, Achieve, Result", "Skill, Timeline, Achievement, Role"], correctAnswer: 1, topic: "Interview Technique" },
+        { question: "Body language in an interview should be?", options: ["Casual and relaxed", "Confident, open posture, eye contact", "Formal and stiff", "Aggressive"], correctAnswer: 1, topic: "Soft Skills" },
+        { question: "When asked 'Do you have questions for us?', you should?", options: ["Say No", "Ask about salary immediately", "Ask about team, role, and growth", "Avoid questions"], correctAnswer: 2, topic: "HR Questions" }
       ],
       "Soft Skills": [
-        { question: "Active listening means?", options: ["Waiting to speak","Fully concentrating and understanding the speaker","Nodding continuously","Looking attentive without listening"], correctAnswer: 1, topic: "Communication" },
-        { question: "Which communication style is most effective professionally?", options: ["Aggressive","Passive","Assertive","Submissive"], correctAnswer: 2, topic: "Communication" },
-        { question: "What is emotional intelligence?", options: ["IQ level","Ability to understand and manage emotions","Memory power","Technical skills"], correctAnswer: 1, topic: "EQ" },
-        { question: "Teamwork means?", options: ["Doing everything yourself","Collaborating to achieve a common goal","Following leader blindly","Competing with teammates"], correctAnswer: 1, topic: "Teamwork" }
+        { question: "Active listening means?", options: ["Waiting to speak", "Fully concentrating and understanding the speaker", "Nodding continuously", "Looking attentive without listening"], correctAnswer: 1, topic: "Communication" },
+        { question: "Which communication style is most effective professionally?", options: ["Aggressive", "Passive", "Assertive", "Submissive"], correctAnswer: 2, topic: "Communication" },
+        { question: "What is emotional intelligence?", options: ["IQ level", "Ability to understand and manage emotions", "Memory power", "Technical skills"], correctAnswer: 1, topic: "EQ" },
+        { question: "Teamwork means?", options: ["Doing everything yourself", "Collaborating to achieve a common goal", "Following leader blindly", "Competing with teammates"], correctAnswer: 1, topic: "Teamwork" }
       ]
     };
 
@@ -609,7 +609,7 @@ app.post('/api/quiz/generate', async (req, res) => {
     }));
 
     res.json({ success: true, questions });
-  } catch(e) {
+  } catch (e) {
     console.error('Quiz gen error:', e.stack || e.message);
     res.status(500).json({ error: e.message });
   }
@@ -644,7 +644,7 @@ Be concise, friendly, and practical. Use bullet points when listing things. Alwa
       console.log('Trying Gemini for chat...');
       reply = await geminiRequest(systemPrompt, messages, 800);
       console.log('Gemini chat OK');
-    } catch(e) {
+    } catch (e) {
       console.log('Gemini chat failed, trying OpenRouter...', e.message);
       const OR_MODELS = ['meta-llama/llama-3.1-8b-instruct:free', 'mistralai/mistral-7b-instruct:free', 'google/gemma-2-9b-it:free'];
       for (const model of OR_MODELS) {
@@ -653,13 +653,13 @@ Be concise, friendly, and practical. Use bullet points when listing things. Alwa
           if (data.error) continue;
           reply = data.choices?.[0]?.message?.content || '';
           if (reply.trim()) break;
-        } catch(err) { continue; }
+        } catch (err) { continue; }
       }
     }
 
     if (!reply.trim()) return res.status(500).json({ error: 'AI unavailable. Please try again.', hint: 'Check GEMINI_API_KEY and OPENROUTER_KEY env vars' });
     res.json({ success: true, reply });
-  } catch(e) {
+  } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
@@ -669,7 +669,7 @@ app.get('/api/quiz/test', async (req, res) => {
   try {
     const reply = await geminiRequest('You are a helpful assistant.', [{ role: 'user', content: 'Say hello in one word.' }], 20);
     res.json({ success: true, provider: 'Gemini 2.0 Flash', response: reply });
-  } catch(e) {
+  } catch (e) {
     res.json({ success: false, geminiError: e.message, tip: 'Set GEMINI_API_KEY in Render env vars' });
   }
 });
@@ -688,7 +688,7 @@ app.post('/api/attempts/start', async (req, res) => {
       assessmentId, studentId: student._id, usn: student.usn, studentName: student.name
     }).save();
     res.json({ success: true, attempt });
-  } catch(e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.post('/api/attempts/:id/warning', async (req, res) => {
@@ -707,7 +707,7 @@ app.post('/api/attempts/:id/warning', async (req, res) => {
     }
     await attempt.save();
     res.json({ success: true, warnings: attempt.warnings, isMalpractice: attempt.isMalpractice });
-  } catch(e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.post('/api/attempts/:id/submit', async (req, res) => {
@@ -734,21 +734,21 @@ app.post('/api/attempts/:id/submit', async (req, res) => {
       await student.save();
     }
     res.json({ success: true, score, maxScore: assessment.totalMarks, percentage: Math.round((score / (assessment.totalMarks || 1)) * 100) });
-  } catch(e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.get('/api/attempts/assessment/:assessmentId', async (req, res) => {
   try {
     const attempts = await AssignmentAttempt.find({ assessmentId: req.params.assessmentId }).sort({ startedAt: -1 });
     res.json(attempts);
-  } catch(e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.get('/api/attempts/all', async (req, res) => {
   try {
     const attempts = await AssignmentAttempt.find().sort({ startedAt: -1 }).limit(200);
     res.json(attempts);
-  } catch(e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 
@@ -856,28 +856,28 @@ app.post('/api/form-submit', async (req, res) => {
     });
 
     // ── Field mapping (exact form labels, lowercased) ──────────────────────
-    const collegeEmail  = d['email']                          || '';
-    const usn           = d['usn']                            || '';
-    const name          = d['full name']                      || '';
-    const gender        = d['gender']                         || '';
-    const personalEmail = d['personal email id']              || '';
-    const phone         = d['mobile number']                  || '';
-    const marks10th     = d['% marks -10th']                  || '';
-    const board10th     = d['10th board(example: kseeb/cbse/icse)'] ||
-                          d['10th board']                     || '';
-    const marks12th     = d['% marks -12th']                  || '';
-    const board12th     = d['12th board(example: department of pre university/cbse)'] ||
-                          d['12th board']                     || '';
-    const diplomaPct    = d['diploma %']                      || '';
-    const diplomaBoard  = d['diploma board (example: board of technical education etc.. )'] ||
-                          d['diploma board']                  || '';
-    const branch        = d['branch']                         || 'CSE';
-    const cgpa          = parseFloat(d['current cgpa graduation'] || d['cgpa'] || '0') || 0;
-    const ongoingBL     = parseInt(d['number of on going backlogs']  || d['ongoing backlogs'] || '0') || 0;
-    const historyBL     = parseInt(d['number of history of backlogs'] || d['history backlogs'] || '0') || 0;
-    const presentAddr   = d['present address']                || '';
-    const permanentAddr = d['permanent address']              || '';
-    const aadhar        = d['aadhar no']                      || '';
+    const collegeEmail = d['email'] || '';
+    const usn = d['usn'] || '';
+    const name = d['full name'] || '';
+    const gender = d['gender'] || '';
+    const personalEmail = d['personal email id'] || '';
+    const phone = d['mobile number'] || '';
+    const marks10th = d['% marks -10th'] || '';
+    const board10th = d['10th board(example: kseeb/cbse/icse)'] ||
+      d['10th board'] || '';
+    const marks12th = d['% marks -12th'] || '';
+    const board12th = d['12th board(example: department of pre university/cbse)'] ||
+      d['12th board'] || '';
+    const diplomaPct = d['diploma %'] || '';
+    const diplomaBoard = d['diploma board (example: board of technical education etc.. )'] ||
+      d['diploma board'] || '';
+    const branch = d['branch'] || 'CSE';
+    const cgpa = parseFloat(d['current cgpa graduation'] || d['cgpa'] || '0') || 0;
+    const ongoingBL = parseInt(d['number of on going backlogs'] || d['ongoing backlogs'] || '0') || 0;
+    const historyBL = parseInt(d['number of history of backlogs'] || d['history backlogs'] || '0') || 0;
+    const presentAddr = d['present address'] || '';
+    const permanentAddr = d['permanent address'] || '';
+    const aadhar = d['aadhar no'] || '';
 
     // Use college email as primary, fallback to personal email
     const email = collegeEmail || personalEmail;
@@ -891,9 +891,9 @@ app.post('/api/form-submit', async (req, res) => {
     // Build student document — store all extra fields in a nested "profile" object
     const studentData = {
       name,
-      usn:      usnUpper,
-      branch:   branch.toUpperCase().trim(),
-      year:     4,                // default final year; form doesn't ask year
+      usn: usnUpper,
+      branch: branch.toUpperCase().trim(),
+      year: 4,                // default final year; form doesn't ask year
       cgpa,
       backlogs: ongoingBL,        // ongoing backlogs used for placement eligibility
       email,
@@ -910,11 +910,11 @@ app.post('/api/form-submit', async (req, res) => {
         board12th,
         diplomaPct,
         diplomaBoard,
-        ongoingBacklogs:  ongoingBL,
-        historyBacklogs:  historyBL,
-        presentAddress:   presentAddr,
+        ongoingBacklogs: ongoingBL,
+        historyBacklogs: historyBL,
+        presentAddress: presentAddr,
         permanentAddress: permanentAddr,
-        aadharNo:         aadhar
+        aadharNo: aadhar
       }
     };
 
@@ -1103,6 +1103,8 @@ app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard
 app.get('/student', (req, res) => res.sendFile(path.join(__dirname, 'dashboard1.html')));
 app.get('/dashboard1', (req, res) => res.sendFile(path.join(__dirname, 'dashboard1.html')));
 app.get('/alumni-login', (req, res) => res.sendFile(path.join(__dirname, 'index1.html')));
+app.get('/index1', (req, res) => res.sendFile(path.join(__dirname, 'index1.html')));
+app.get('/index1.html', (req, res) => res.sendFile(path.join(__dirname, 'index1.html')));
 app.get('/alumni', (req, res) => res.sendFile(path.join(__dirname, 'dashboard-alumni.html')));
 app.get('/alumni-connect', (req, res) => res.sendFile(path.join(__dirname, 'alumni-connect.html')));
 // Serve uploaded files
