@@ -644,19 +644,66 @@
             text-decoration: none;
         }
 
+        /* ── HAMBURGER ── */
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            z-index: 400;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 11px;
+            cursor: pointer;
+            font-size: 19px;
+            line-height: 1;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: background 0.2s;
+        }
+
+        .hamburger:hover {
+            background: var(--surface2);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(3px);
+            z-index: 150;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
         @media(max-width:900px) {
+            .hamburger {
+                display: flex;
+            }
+
             .sidebar {
-                width: 64px;
+                width: 240px;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 300;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
             }
 
             .sidebar .logo-text,
             .sidebar .nav-item span:not(.nav-icon),
             .sidebar-footer .user-info {
-                display: none;
+                display: block !important;
             }
 
             .main {
-                margin-left: 64px;
+                margin-left: 0 !important;
+                padding-top: 64px;
             }
 
             .stats-grid {
@@ -666,6 +713,73 @@
             .profile-grid {
                 grid-template-columns: 1fr;
             }
+
+            .topbar {
+                padding: 0 16px;
+            }
+
+            .page {
+                padding: 20px 16px;
+            }
+        }
+
+        @media(max-width:600px) {
+            .main {
+                padding: 12px;
+                padding-top: 60px;
+            }
+
+            .page {
+                padding: 12px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .card-header {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .table-wrap {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                min-width: 480px;
+                font-size: 12px;
+            }
+
+            thead th,
+            tbody td {
+                padding: 8px 10px;
+            }
+
+            .alumni-card-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .btn {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+
+            .topbar h1 {
+                font-size: 15px;
+            }
+        }
+
+        @media(max-width:420px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -673,6 +787,10 @@
 <body>
 
     <div class="toast-wrap" id="toasts"></div>
+
+    <!-- HAMBURGER -->
+    <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
     <nav class="sidebar">
         <div class="sidebar-header">
@@ -882,7 +1000,17 @@
         function toast(t, m, type = '') { const c = document.getElementById('toasts'); const el = document.createElement('div'); el.className = 'toast ' + type; el.innerHTML = `<div class="toast-t">${t}</div><div class="toast-m">${m}</div>`; c.appendChild(el); setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(100%)'; el.style.transition = '0.3s'; setTimeout(() => el.remove(), 300) }, 4000) }
         const api = async (m, p, b) => { const o = { method: m, headers: { 'Content-Type': 'application/json' } }; if (b) o.body = JSON.stringify(b); return (await fetch(p, o)).json() };
 
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('show');
+        }
+        function closeSidebar() {
+            document.querySelector('.sidebar').classList.remove('open');
+            document.getElementById('sidebar-overlay').classList.remove('show');
+        }
+
         function go(page) {
+            closeSidebar();
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById('page-' + page).classList.add('active');

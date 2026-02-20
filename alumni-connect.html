@@ -815,9 +815,51 @@
             margin-top: 2px
         }
 
+        /* ── HAMBURGER ── */
+        .group-hamburger {
+            display: none;
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            z-index: 400;
+            background: #0d1424;
+            border: 1px solid #1e2d48;
+            border-radius: 10px;
+            padding: 8px 11px;
+            cursor: pointer;
+            font-size: 19px;
+            line-height: 1;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            color: #e8f0fe;
+        }
+
+        .group-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(3px);
+            z-index: 150;
+        }
+
+        .group-overlay.show {
+            display: block;
+        }
+
         @media(max-width:768px) {
+            .group-hamburger {
+                display: flex;
+            }
+
             .group-sidebar {
-                width: 64px
+                width: 260px;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 300;
+            }
+
+            .group-sidebar.open {
+                transform: translateX(0);
             }
 
             .group-sidebar .gs-text,
@@ -826,15 +868,55 @@
             .group-sidebar .gs-label,
             .group-sidebar .gs-actions span,
             .gs-back {
-                display: none
+                display: block !important;
             }
 
             .main-content {
-                margin-left: 64px
+                margin-left: 0;
+                padding-top: 60px;
             }
 
             .alumni-list {
-                grid-template-columns: 1fr
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                flex-wrap: wrap;
+                gap: 10px;
+                padding: 0 16px;
+            }
+        }
+
+        @media(max-width:600px) {
+            .main-content {
+                padding: 12px;
+                padding-top: 60px;
+            }
+
+            .message-list {
+                padding: 12px;
+            }
+
+            .message-input-area {
+                padding: 10px 12px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .msg-input {
+                min-width: 0;
+            }
+
+            .alumni-list {
+                grid-template-columns: 1fr;
+            }
+
+            .alumni-card {
+                padding: 16px;
+            }
+
+            .topbar h1 {
+                font-size: 15px;
             }
         }
     </style>
@@ -843,6 +925,10 @@
 <body>
 
     <div class="toast-wrap" id="toasts"></div>
+
+    <!-- HAMBURGER -->
+    <button class="group-hamburger" id="grp-hamburger" onclick="toggleGroupSidebar()" aria-label="Open menu">☰</button>
+    <div class="group-overlay" id="group-overlay" onclick="closeGroupSidebar()"></div>
 
     <!-- GROUP SIDEBAR -->
     <div class="group-sidebar">
@@ -968,6 +1054,15 @@
                 currentUser = { username: 'student', name: localStorage.getItem('studentName') || 'Student', role: 'student' };
             }
             loadGroups();
+        }
+
+        function toggleGroupSidebar() {
+            document.querySelector('.group-sidebar').classList.toggle('open');
+            document.getElementById('group-overlay').classList.toggle('show');
+        }
+        function closeGroupSidebar() {
+            document.querySelector('.group-sidebar').classList.remove('open');
+            document.getElementById('group-overlay').classList.remove('show');
         }
 
         async function loadGroups() {
