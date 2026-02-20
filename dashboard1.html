@@ -3114,7 +3114,8 @@
             <div class="rw-template-preview rw-preview-classic">
               <div class="rtp-name">JOHN DOE</div>
               <div class="rtp-role">Passionate CSE Student</div>
-              <div class="rtp-contact">Mangalore | john@email.com</div>
+              <div class="rtp-contact">Mangalore | <a href="/cdn-cgi/l/email-protection" class="__cf_email__"
+                  data-cfemail="bcd6d3d4d2fcd9d1ddd5d092dfd3d1">[email&#160;protected]</a></div>
               <div class="rtp-hr"></div>
               <div class="rtp-section">SUMMARY</div>
               <div class="rtp-text">Passionate CSE-AIML student...</div>
@@ -3390,6 +3391,7 @@
     </div>
   </div>
 
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
   <script>
     // ═══════════════════════════════════════════════════════════
     // GLOBALS
@@ -4409,6 +4411,19 @@
         document.getElementById('rw-compare-results').scrollIntoView({ behavior: 'smooth' });
       }
 
+      // Expose Resume Wizard functions globally so onclick attributes can call them
+      window.rwInit = rwInit;
+      window.rwNext = rwNext;
+      window.rwGoToDashboard = rwGoToDashboard;
+      window.rwSelectTemplate = rwSelectTemplate;
+      window.rwAddProject = rwAddProject;
+      window.rwRemoveProject = rwRemoveProject;
+      window.rwAddInternship = rwAddInternship;
+      window.rwRemoveInternship = rwRemoveInternship;
+      window.rwLoadDashboard = rwLoadDashboard;
+      window.rwCopyResumeData = rwCopyResumeData;
+      window.rwCompareResume = rwCompareResume;
+
     })();
   </script>
 
@@ -5059,17 +5074,3 @@
         d.className = 'pc-typing'; d.id = id;
         d.innerHTML = '<span></span><span></span><span></span>';
         el.appendChild(d);
-        el.scrollTop = el.scrollHeight;
-        return id;
-      }
-
-      function pcRemoveTyping(id) {
-        var el = document.getElementById(id);
-        if (el) el.remove();
-      }
-    })();
-  </script>
-
-</body>
-
-</html>
