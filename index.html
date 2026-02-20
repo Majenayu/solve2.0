@@ -377,6 +377,31 @@ tbody td:first-child { color: var(--text); font-weight: 500; }
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toast-container"></div>
 
+<!-- Google Name Modal -->
+<div id="google-name-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#0d1424; border:1px solid #1e2d48; border-radius:20px; padding:32px; width:92%; max-width:420px; animation:fadeUp 0.3s ease;">
+    <div style="text-align:center; margin-bottom:24px;">
+      <div style="font-size:42px; margin-bottom:10px;">👋</div>
+      <h2 style="font-size:18px; font-weight:700; color:#e8f0fe; margin-bottom:6px;">Welcome to PlacementPro!</h2>
+      <p style="font-size:13px; color:#8da4c8;">Please confirm your name to complete sign-in.</p>
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="display:block; font-size:11.5px; color:#8da4c8; font-weight:600; margin-bottom:6px; letter-spacing:0.2px;">Your Full Name</label>
+      <input id="google-name-input" type="text" placeholder="Enter your full name"
+        style="width:100%; padding:12px 14px; background:#121c30; border:1px solid #1e2d48; border-radius:10px; color:#e8f0fe; font-family:inherit; font-size:14px; outline:none; transition:border-color 0.2s;"
+        onfocus="this.style.borderColor='#4f8ef7'" onblur="this.style.borderColor='#1e2d48'"
+        onkeydown="if(event.key==='Enter') confirmGoogleName()">
+      <p style="font-size:11px; color:#3d5a80; margin-top:6px;">This is how you'll appear on your placement profile.</p>
+    </div>
+    <button onclick="confirmGoogleName()"
+      style="width:100%; padding:12px; background:linear-gradient(135deg,#4f8ef7,#00d4aa); color:white; border:none; border-radius:10px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:opacity 0.2s;"
+      onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+      Continue to Dashboard →
+    </button>
+  </div>
+</div>
+
+
 <!-- MAIN APP -->
 <div id="app">
   <!-- SIDEBAR -->
@@ -802,27 +827,57 @@ async function doLogout() {
   document.getElementById('app').style.display = 'none';
 }
 
+let _googleCredential = null;
+let _googleNameFromToken = '';
+
 async function handleGoogleLogin(response) {
+  try {
+    // Decode the JWT to get the name Google already knows
+    const payload = JSON.parse(atob(response.credential.split('.')[1]));
+    _googleCredential = response.credential;
+    _googleNameFromToken = payload.name || '';
+
+    // Pre-fill modal with Google name and show it
+    document.getElementById('google-name-input').value = _googleNameFromToken;
+    document.getElementById('google-name-modal').style.display = 'flex';
+    setTimeout(() => document.getElementById('google-name-input').select(), 100);
+  } catch (err) {
+    console.error(err);
+    alert('Google login failed — could not read token');
+  }
+}
+
+async function confirmGoogleName() {
+  const name = document.getElementById('google-name-input').value.trim();
+  if (!name) {
+    document.getElementById('google-name-input').style.borderColor = '#f43f5e';
+    document.getElementById('google-name-input').focus();
+    return;
+  }
+  const btn = event.target;
+  btn.textContent = 'Signing in…';
+  btn.disabled = true;
+
   try {
     const res = await fetch('/api/auth/google', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ credential: response.credential })
+      body: JSON.stringify({ credential: _googleCredential, name })
     });
-
     const data = await res.json();
 
     if (!data.success) {
+      btn.textContent = 'Continue to Dashboard →';
+      btn.disabled = false;
       alert(data.error || 'Google login failed');
       return;
     }
 
-    // ✅ Success (for now just reload / or go to dashboard later)
-    alert('Student login successful!');
-    location.reload();
-
+    window.location.href = '/student';
   } catch (err) {
     console.error(err);
+    btn.textContent = 'Continue to Dashboard →';
+    btn.disabled = false;
     alert('Google login failed');
   }
 }

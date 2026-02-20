@@ -122,7 +122,7 @@ app.post('/api/auth/login', async (req, res) => {
 
 app.post('/api/auth/google', async (req, res) => {
   try {
-    const { credential } = req.body;
+    const { credential, name: submittedName } = req.body;
 
     const ticket = await googleClient.verifyIdToken({
       idToken: credential,
@@ -131,31 +131,40 @@ app.post('/api/auth/google', async (req, res) => {
 
     const payload = ticket.getPayload();
     const email = payload.email;
-    const name = payload.name;
 
-    // 🔒 Allow only vvce.ac.in
+    // Use the name the user confirmed in the modal (fallback to Google's name)
+    const name = (submittedName || payload.name || '').trim();
+
+    // 🔒 Allow only vvce.ac.in emails
     if (!email.endsWith('@vvce.ac.in')) {
       return res.json({ success: false, error: 'Only @vvce.ac.in emails are allowed' });
     }
 
-    // Find or create student
-    let student = await Student.findOne({ email });
-
-    if (!student) {
-      student = await Student.create({
-        name,
-        email,
-        usn: email.split('@')[0].toUpperCase(),
-        branch: 'CSE',
-        year: 4,
-        cgpa: 0,
-        backlogs: 0,
-        password: 'google-auth'
-      });
+    if (!name) {
+      return res.json({ success: false, error: 'Name is required' });
     }
 
-    // Save session
-    req.session.user = { role: 'student', username: student.usn, id: student._id, email, name: student.name };
+    // Derive USN from email prefix (e.g. 1ms21cs001@vvce.ac.in → 1MS21CS001)
+    const usn = email.split('@')[0].toUpperCase();
+
+    // Upsert: create student if new, update name if already exists
+    let student = await Student.findOneAndUpdate(
+      { $or: [{ email }, { usn }] },
+      {
+        $set: { name, email, password: 'google-auth' },
+        $setOnInsert: { usn, branch: 'CSE', year: 4, cgpa: 0, backlogs: 0 }
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
+    // Save session — username field matches normal student login
+    req.session.user = {
+      role: 'student',
+      username: student.usn,
+      id: student._id,
+      email,
+      name: student.name
+    };
 
     res.json({ success: true, role: 'student', name: student.name });
 
