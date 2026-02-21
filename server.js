@@ -11,8 +11,8 @@ const https = require('https');
 const { OAuth2Client } = require('google-auth-library');
 
 // ─── AI HELPER — Gemini 2.0 Flash (primary) + OpenRouter (fallback) ─────────
-const GEMINI_API_KEY = "AIzaSyC4qQscxqWR6LuMIw7Dd-_nHrl5R-UMYuQ";
-const OPENROUTER_KEY = "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";
+const GEMINI_API_KEY = "AIzaSyDHmVFG1dQBz6DP015G8-KEX1VEJY13piw";
+const OPENROUTER_KEY = "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";
 
 function geminiRequest(systemPrompt, userMessages, maxTokens) {
   return new Promise((resolve, reject) => {
