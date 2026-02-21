@@ -1040,18 +1040,38 @@
         function toast(t, m, type = '') { const c = document.getElementById('toasts'); const el = document.createElement('div'); el.className = 'toast ' + type; el.innerHTML = `<div class="toast-t">${t}</div><div class="toast-m">${m}</div>`; c.appendChild(el); setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(100%)'; el.style.transition = '0.3s'; setTimeout(() => el.remove(), 300) }, 4000) }
         const api = async (m, p, b) => { const o = { method: m, headers: { 'Content-Type': 'application/json' } }; if (b) o.body = JSON.stringify(b); return (await fetch(p, o)).json() };
 
-        // Figure out who we are (student session)
+        // Figure out who we are (student or alumni session)
         async function init() {
             try {
-                // Try to get session info from student login
                 const res = await fetch('/api/auth/me');
                 if (res.ok) {
-                    currentUser = await res.json();
+                    const session = await res.json();
+                    if (session && !session.error) {
+                        if (session.role === 'alumni') {
+                            // Alumni session: fetch full alumni profile to get _id, name etc.
+                            const alumniProfile = await api('GET', '/api/alumni/me');
+                            currentUser = {
+                                id: alumniProfile._id || session.id,
+                                username: alumniProfile._id || session.id,  // use _id as userId key
+                                name: alumniProfile.name || session.name,
+                                role: 'alumni',
+                                email: session.email
+                            };
+                        } else {
+                            // Student or admin session
+                            currentUser = session;
+                        }
+                    }
                 }
-            } catch (e) { }
-            if (!currentUser || !currentUser.username) {
-                // Fallback: use localStorage or a default
-                currentUser = { username: 'student', name: localStorage.getItem('studentName') || 'Student', role: 'student' };
+            } catch (e) { console.error('Session fetch error:', e); }
+
+            if (!currentUser || (!currentUser.username && !currentUser.id)) {
+                // True fallback only when no session at all
+                currentUser = {
+                    username: localStorage.getItem('studentUsn') || 'guest',
+                    name: localStorage.getItem('studentName') || 'Guest',
+                    role: 'student'
+                };
             }
             loadGroups();
         }
@@ -1086,9 +1106,10 @@
             if (!currentGroup) return;
 
             // Auto-join if not member
-            const userId = currentUser.username || currentUser.id;
-            if (!currentGroup.members.find(m => m.userId === userId)) {
-                await api('POST', `/api/alumni/groups/${id}/join`, { userId, name: currentUser.name, role: 'student' });
+            const userId = currentUser.id || currentUser.username;
+            const userRole = currentUser.role || 'student';
+            if (!currentGroup.members.find(m => m.userId === userId || m.userId === String(userId))) {
+                await api('POST', `/api/alumni/groups/${id}/join`, { userId: String(userId), name: currentUser.name, role: userRole });
                 allGroups = await api('GET', '/api/alumni/groups');
                 currentGroup = allGroups.find(g => g._id === id);
             }
@@ -1117,7 +1138,7 @@
             if (!currentGroup) return;
             const msgs = await api('GET', `/api/alumni/groups/${currentGroup._id}/messages/general`);
             const el = document.getElementById('chat-messages');
-            const userId = currentUser.username || currentUser.id;
+            const userId = currentUser.id || currentUser.username;
             if (!msgs.length) { el.innerHTML = '<div class="empty"><div class="e-icon">💬</div><p>No messages yet. Start the conversation!</p></div>'; return; }
             el.innerHTML = msgs.map(m => {
                 const isSelf = m.senderId === userId;
@@ -1139,7 +1160,7 @@
             if (!content) return;
             input.value = '';
             await api('POST', `/api/alumni/groups/${currentGroup._id}/messages`, {
-                section: 'general', senderId: currentUser.username || currentUser.id, senderName: currentUser.name, senderRole: 'student', content
+                section: 'general', senderId: currentUser.id || currentUser.username, senderName: currentUser.name, senderRole: currentUser.role || 'student', content
             });
             loadChatMessages();
         }
@@ -1181,9 +1202,9 @@
             const fd = new FormData();
             fd.append('file', file);
             fd.append('section', 'resource');
-            fd.append('senderId', currentUser.username || currentUser.id);
+            fd.append('senderId', currentUser.id || currentUser.username);
             fd.append('senderName', currentUser.name);
-            fd.append('senderRole', 'student');
+            fd.append('senderRole', currentUser.role || 'student');
             fd.append('content', file.name);
             try {
                 const res = await fetch(`/api/alumni/groups/${currentGroup._id}/messages`, { method: 'POST', body: fd });
@@ -1208,7 +1229,7 @@
             }
 
             el.innerHTML = alumniMembers.map(m => {
-                const profile = alumniProfiles.find(p => p._id === m.userId) || {};
+                const profile = alumniProfiles.find(p => String(p._id) === String(m.userId)) || {};
                 return `<div class="alumni-card">
       <div class="ac-header">
         <div class="ac-avatar">${(profile.name || m.name || 'A')[0].toUpperCase()}</div>
@@ -1300,9 +1321,9 @@
         async function createGroup() {
             const company = document.getElementById('cg-company').value.trim();
             if (!company) { toast('Error', 'Enter a company name', 'e'); return; }
-            const userId = currentUser.username || currentUser.id;
+            const userId = currentUser.id || currentUser.username;
             const res = await api('POST', '/api/alumni/groups', {
-                companyTag: company, createdBy: userId, creatorName: currentUser.name, creatorRole: 'student'
+                companyTag: company, createdBy: userId, creatorName: currentUser.name, creatorRole: currentUser.role || 'student'
             });
             if (res.success) {
                 toast('Group Created', `${company} Family is now live!`, 's');
