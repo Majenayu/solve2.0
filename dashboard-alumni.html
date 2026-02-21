@@ -1042,10 +1042,15 @@
 
         async function loadDashboard() {
             allGroups = await api('GET', '/api/alumni/groups');
-            const myGroups = allGroups.filter(g => g.members.some(m => m.userId === alumniData._id));
+            const myId = String(alumniData._id);
+            const myGroups = allGroups.filter(g => g.members.some(m => String(m.userId) === myId));
             document.getElementById('stat-groups').textContent = myGroups.length;
             const dg = document.getElementById('dash-groups');
-            if (!myGroups.length) { dg.innerHTML = '<div class="empty"><div class="e-icon">👥</div><p>No groups yet. Join one from the student connect page!</p></div>'; return; }
+            if (!myGroups.length) {
+                dg.innerHTML = `<div class="empty"><div class="e-icon">👥</div><p>You haven't joined any groups yet.</p>
+                <button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="go('groups')">Browse & Join Groups</button></div>`;
+                return;
+            }
             dg.innerHTML = myGroups.slice(0, 5).map(g => `
     <div class="group-card" onclick="go('groups');loadGroupChat('${g._id}')">
       <div class="gc-name">🏢 ${g.name}</div>
@@ -1056,20 +1061,52 @@
 
         async function loadGroups() {
             allGroups = await api('GET', '/api/alumni/groups');
-            const myGroups = allGroups.filter(g => g.members.some(m => m.userId === alumniData._id));
+            const myId = String(alumniData._id);
+            const myGroups = allGroups.filter(g => g.members.some(m => String(m.userId) === myId));
+            const notJoined = allGroups.filter(g => !g.members.some(m => String(m.userId) === myId));
             const el = document.getElementById('groups-list');
-            if (!myGroups.length) { el.innerHTML = '<div class="empty"><div class="e-icon">👥</div><p>You haven\'t joined any groups yet</p></div>'; return; }
-            el.innerHTML = myGroups.map(g => `
+            let html = '';
+            if (myGroups.length) {
+                html += `<div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">My Groups</div>`;
+                html += myGroups.map(g => `
     <div class="group-card">
       <div class="gc-name">🏢 ${g.name} <span class="badge b-purple">${g.companyTag}</span></div>
       <div class="gc-meta"><span>👥 ${g.members.length} members</span><span>📅 ${new Date(g.createdAt).toLocaleDateString()}</span></div>
-    </div>
-  `).join('');
+    </div>`).join('');
+            }
+            if (notJoined.length) {
+                html += `<div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin:18px 0 10px;">Available Groups</div>`;
+                html += notJoined.map(g => `
+    <div class="group-card" style="opacity:0.85;">
+      <div class="gc-name">🏢 ${g.name} <span class="badge" style="background:rgba(139,92,246,0.1);color:var(--purple);">${g.companyTag}</span></div>
+      <div class="gc-meta"><span>👥 ${g.members.length} members</span></div>
+      <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="joinGroupAsAlumni('${g._id}')">+ Join Group</button>
+    </div>`).join('');
+            }
+            if (!html) { el.innerHTML = '<div class="empty"><div class="e-icon">👥</div><p>No groups exist yet. Ask students to create one!</p></div>'; return; }
+            el.innerHTML = html;
+        }
+
+        async function joinGroupAsAlumni(groupId) {
+            if (!alumniData) return;
+            const res = await api('POST', `/api/alumni/groups/${groupId}/join`, {
+                userId: String(alumniData._id),
+                name: alumniData.name,
+                role: 'alumni'
+            });
+            if (res.success) {
+                toast('Joined!', 'You have joined the group as alumni 🎓', 's');
+                loadGroups();
+                loadMessageGroupSelect();
+            } else {
+                toast('Error', res.error || 'Could not join group', 'e');
+            }
         }
 
         async function loadMessageGroupSelect() {
             allGroups = await api('GET', '/api/alumni/groups');
-            const myGroups = allGroups.filter(g => g.members.some(m => m.userId === alumniData._id));
+            const myId = String(alumniData._id);
+            const myGroups = allGroups.filter(g => g.members.some(m => String(m.userId) === myId));
             const sel = document.getElementById('msg-group-select');
             sel.innerHTML = '<option value="">— Select a group —</option>' + myGroups.map(g => `<option value="${g._id}">${g.name}</option>`).join('');
         }
