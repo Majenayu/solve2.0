@@ -11,8 +11,8 @@ const https = require('https');
 const { OAuth2Client } = require('google-auth-library');
 
 // ─── AI HELPER — Gemini 2.0 Flash (primary) + OpenRouter (fallback) ─────────
-const GEMINI_API_KEY = "AIzaSyDHmVFG1dQBz6DP015G8-KEX1VEJY13piw";
-const OPENROUTER_KEY = "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";
+const GEMINI_API_KEY = "AIzaSyC4qQscxqWR6LuMIw7Dd-_nHrl5R-UMYuQ";
+const OPENROUTER_KEY = "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";
 
 function geminiRequest(systemPrompt, userMessages, maxTokens) {
   return new Promise((resolve, reject) => {
@@ -860,9 +860,21 @@ app.post('/api/assessments/:id/submit', async (req, res) => {
       student.assessmentScores.push({ assessmentId: assessment._id, score, maxScore: assessment.totalMarks, submittedAt: new Date() });
       await student.save();
     }
-    // Update attempt if provided
+    // Update existing attempt by attemptId OR upsert by assessmentId+usn (so monitor always has data)
     if (attemptId) {
-      await AssignmentAttempt.findByIdAndUpdate(attemptId, { status: 'submitted', submittedAt: new Date(), answers, score, maxScore: assessment.totalMarks });
+      await AssignmentAttempt.findByIdAndUpdate(attemptId, {
+        status: 'submitted', submittedAt: new Date(), answers, score, maxScore: assessment.totalMarks
+      });
+    } else {
+      // Upsert: find existing attempt for this student+assessment or create one
+      await AssignmentAttempt.findOneAndUpdate(
+        { assessmentId: assessment._id, usn: usn.toUpperCase() },
+        {
+          $set: { status: 'submitted', submittedAt: new Date(), answers, score, maxScore: assessment.totalMarks },
+          $setOnInsert: { studentId: student._id, studentName: student.name, startedAt: new Date() }
+        },
+        { upsert: true }
+      );
     }
     res.json({ success: true, score, maxScore: assessment.totalMarks, percentage: Math.round((score / assessment.totalMarks) * 100) });
   } catch (e) { res.status(500).json({ error: e.message }); }
