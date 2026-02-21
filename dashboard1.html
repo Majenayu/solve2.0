@@ -4585,14 +4585,67 @@
     // ═══════════════════════════════════════════════════════════
     // QUIZ ENGINE
     // ═══════════════════════════════════════════════════════════
+    let currentAttemptId = null;
+    let malpracticeWarnings = 0;
+
+    // Tab-switch / window-blur detection for malpractice monitoring
+    async function handleVisibilityChange() {
+      if (!currentAttemptId || !currentQuiz) return;
+      if (document.hidden || document.visibilityState === 'hidden') {
+        malpracticeWarnings++;
+        const warningLeft = 3 - malpracticeWarnings;
+        const resp = await api('POST', `/api/attempts/${currentAttemptId}/warning`, {
+          event: `Tab switch / window blur detected (${malpracticeWarnings} of 3)`
+        });
+        if (resp && resp.isMalpractice) {
+          clearInterval(quizTimerInterval); quizTimerInterval = null;
+          const el = document.getElementById('quiz-wrap');
+          if (el) el.innerHTML = `<div class="empty" style="color:var(--danger)"><div class="e-icon">🚨</div>
+            <p style="font-weight:700;font-size:18px;">Assessment Auto-Submitted</p>
+            <p style="color:var(--text2);">You were flagged for malpractice after ${malpracticeWarnings} tab switches.<br>Your attempt has been marked as malpractice.</p>
+            <button class="btn btn-outline" style="margin-top:16px;" onclick="go('assessments')">← Back to Assessments</button>
+          </div>`;
+          currentAttemptId = null; currentQuiz = null;
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+        } else if (warningLeft > 0) {
+          // Show warning overlay briefly
+          const warn = document.createElement('div');
+          warn.style.cssText = 'position:fixed;top:20px;right:20px;background:#f43f5e;color:#fff;padding:14px 20px;border-radius:12px;z-index:9999;font-size:14px;font-weight:700;box-shadow:0 4px 20px rgba(0,0,0,0.3);';
+          warn.textContent = `⚠️ Warning ${malpracticeWarnings}/3 — Tab switch detected! ${warningLeft} warning${warningLeft>1?'s':''} remaining before auto-submit.`;
+          document.body.appendChild(warn);
+          setTimeout(() => warn.remove(), 4000);
+        }
+      }
+    }
+
     async function startQuiz(id) {
       const el = document.getElementById('quiz-wrap');
       el.innerHTML = '<div class="empty"><div class="e-icon"><div class="loader"></div></div><p>Loading assessment…</p></div>';
       go('quiz');
       const data = await api('GET', `/api/assessments/${id}/take`);
       if (!data || data.error) { el.innerHTML = `<div class="empty"><div class="e-icon">❌</div><p>${data?.error || 'Failed to load'}</p></div>`; return; }
+
+      // ── Create attempt record so admin monitor can track this student ──
+      currentAttemptId = null;
+      malpracticeWarnings = 0;
+      const attemptRes = await api('POST', '/api/attempts/start', {
+        assessmentId: id, usn: currentUser.username
+      });
+      if (attemptRes && attemptRes.attempt) {
+        currentAttemptId = attemptRes.attempt._id;
+        // If already submitted, block retake
+        if (attemptRes.attempt.status === 'submitted' || attemptRes.attempt.status === 'malpractice') {
+          el.innerHTML = `<div class="empty"><div class="e-icon">✅</div><p>You have already submitted this assessment.</p>
+            <button class="btn btn-outline" style="margin-top:16px;" onclick="go('assessments')">← Back</button></div>`;
+          return;
+        }
+      }
+
       currentQuiz = { ...data, id, started: Date.now() };
       quizAnswers = {};
+      // Register malpractice tab-switch listener
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.addEventListener('visibilitychange', handleVisibilityChange);
       renderQuiz();
     }
 
@@ -4659,13 +4712,25 @@
 
     async function submitQuiz() {
       if (quizTimerInterval) { clearInterval(quizTimerInterval); quizTimerInterval = null; }
+      // Remove malpractice listener
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+
       const unanswered = currentQuiz.questions.length - Object.keys(quizAnswers).length;
       if (unanswered > 0 && !confirm(`You have ${unanswered} unanswered question(s). Submit anyway?`)) return;
-      const res = await api('POST', `/api/assessments/${currentQuiz.id}/submit`, {
-        usn: currentUser.username,
-        answers: quizAnswers
-      });
+
+      let res;
+      if (currentAttemptId) {
+        // ── Primary path: submit via attempt endpoint (updates admin monitor) ──
+        res = await api('POST', `/api/attempts/${currentAttemptId}/submit`, { answers: quizAnswers });
+      } else {
+        // ── Fallback: legacy endpoint if attempt creation failed ──
+        res = await api('POST', `/api/assessments/${currentQuiz.id}/submit`, {
+          usn: currentUser.username, answers: quizAnswers
+        });
+      }
+
       if (res.error) { toast('Error', res.error, 'e'); return; }
+      currentAttemptId = null;
       showQuizResult(res);
       // Refresh student data
       const fresh = await api('GET', `/api/students/me/${currentUser.username}`);
