@@ -2012,14 +2012,13 @@
           <table>
             <thead>
               <tr>
-                <th>#</th>
+                <th style="width:36px;">#</th>
                 <th>Student</th>
-                <th>USN</th>
                 <th>Assessment</th>
                 <th>Status</th>
                 <th>Score</th>
-                <th>Warnings</th>
-                <th>Started At</th>
+                <th style="text-align:center;">Warnings</th>
+                <th>Timeline</th>
                 <th>Events</th>
               </tr>
             </thead>
@@ -3364,32 +3363,62 @@ correctAnswer is 0-indexed (0=A,1=B,2=C,3=D). Make all ${qcount} questions uniqu
       const tbody = document.getElementById('monitor-table');
       let attempts = monitorFilter === 'all' ? allAttempts : allAttempts.filter(a => a.status === monitorFilter);
       if (!attempts.length) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--text3);">No ${monitorFilter === 'all' ? '' : monitorFilter} attempts found</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text3);">
+          <div style="font-size:32px;margin-bottom:8px;">📭</div>
+          <div>No ${monitorFilter === 'all' ? '' : monitorFilter + ' '}attempts found</div>
+          <div style="font-size:12px;margin-top:4px;color:var(--text3);">Students must start an assessment for records to appear here</div>
+        </td></tr>`;
         return;
       }
       const statusColor = { 'submitted': 'var(--success)', 'in-progress': 'var(--warning)', 'malpractice': 'var(--danger)' };
-      const statusBadge = s => `<span class="badge" style="background:${statusColor[s] + '22'};color:${statusColor[s]};border:1px solid ${statusColor[s] + '44'}">${s === 'in-progress' ? '⏳ In Progress' : s === 'submitted' ? '✅ Submitted' : '🚨 Malpractice'}</span>`;
+      const statusIcon  = { 'submitted': '✅', 'in-progress': '⏳', 'malpractice': '🚨' };
+      const statusLabel = { 'submitted': 'Submitted', 'in-progress': 'In Progress', 'malpractice': 'Malpractice' };
+      const statusBadge = s => `<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600;background:${statusColor[s]+'18'};color:${statusColor[s]};border:1px solid ${statusColor[s]+'33'}">${statusIcon[s]} ${statusLabel[s]}</span>`;
+
+      const scoreCell = (a) => {
+        if (a.status === 'in-progress') return `<span style="color:var(--text3);font-size:12px;">—</span>`;
+        if (a.maxScore > 0) {
+          const pct = Math.round((a.score / a.maxScore) * 100);
+          const col = pct >= 70 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--danger)';
+          return `<div style="min-width:110px;">
+            <div style="font-weight:700;color:${col};font-size:13px;">${a.score}/${a.maxScore} <span style="font-weight:500;font-size:11px;">(${pct}%)</span></div>
+            <div style="height:5px;border-radius:4px;background:var(--border);margin-top:4px;overflow:hidden;">
+              <div style="height:100%;width:${pct}%;background:${col};border-radius:4px;transition:width 0.4s;"></div>
+            </div>
+          </div>`;
+        }
+        return `<span style="color:var(--text3);font-size:12px;">Not scored</span>`;
+      };
+
       tbody.innerHTML = attempts.map((a, i) => {
         const assessment = monitorAssessments[a.assessmentId] || {};
-        const pct = a.maxScore > 0 ? Math.round((a.score / a.maxScore) * 100) : null;
         const started = new Date(a.startedAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-        return `<tr style="${a.isMalpractice ? 'background:rgba(244,63,94,0.04);' : a.status === 'in-progress' ? 'background:rgba(245,158,11,0.03);' : ''}">
-      <td style="color:var(--text3)">${i + 1}</td>
-      <td style="color:var(--text);font-weight:600;">${a.studentName || '—'}</td>
-      <td><code style="font-size:11px;">${a.usn}</code></td>
-      <td style="color:var(--text2);font-size:12px;">${assessment.title || 'Unknown'}</td>
-      <td>${statusBadge(a.status)}</td>
-      <td style="font-weight:700;color:${pct === null ? 'var(--text3)' : pct >= 70 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--danger)'}">
-        ${pct !== null ? `${a.score}/${a.maxScore} (${pct}%)` : '—'}
-      </td>
-      <td>
-        ${a.warnings > 0 ? `<span style="color:${a.warnings >= 3 ? 'var(--danger)' : 'var(--warning)'};font-weight:700;">⚠️ ${a.warnings}</span>` : '<span style="color:var(--text3)">0</span>'}
-      </td>
-      <td style="font-size:11.5px;color:var(--text3);">${started}</td>
-      <td>
-        ${a.malpracticeLog?.length ? `<button class="btn btn-outline btn-sm btn-icon" onclick="viewMalpracticeLog(${JSON.stringify(a.malpracticeLog || []).replace(/"/g, '&quot;')}, '${a.studentName || a.usn}')" title="View events">📋</button>` : '—'}
-      </td>
-    </tr>`;
+        const submittedAt = a.submittedAt ? new Date(a.submittedAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : null;
+        const rowBg = a.isMalpractice ? 'background:rgba(244,63,94,0.04);' : a.status === 'in-progress' ? 'background:rgba(245,158,11,0.03);' : '';
+        return `<tr style="${rowBg}">
+          <td style="color:var(--text3);font-size:12px;">${i + 1}</td>
+          <td>
+            <div style="font-weight:600;color:var(--text);font-size:13px;">${a.studentName || '—'}</div>
+            <code style="font-size:10px;color:var(--text3);">${a.usn}</code>
+          </td>
+          <td style="color:var(--text2);font-size:12px;max-width:160px;word-break:break-word;">${assessment.title || '<span style="color:var(--text3)">Unknown</span>'}</td>
+          <td>${statusBadge(a.status)}</td>
+          <td>${scoreCell(a)}</td>
+          <td style="text-align:center;">
+            ${a.warnings > 0
+              ? `<span style="display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:700;background:${a.warnings>=3?'rgba(244,63,94,0.12)':'rgba(245,158,11,0.12)'};color:${a.warnings>=3?'var(--danger)':'var(--warning)'};">⚠️ ${a.warnings}</span>`
+              : `<span style="color:var(--text3);font-size:12px;">—</span>`}
+          </td>
+          <td style="font-size:11px;color:var(--text3);">
+            <div>🕐 ${started}</div>
+            ${submittedAt ? `<div style="margin-top:2px;">🏁 ${submittedAt}</div>` : ''}
+          </td>
+          <td>
+            ${a.malpracticeLog?.length
+              ? `<button class="btn btn-outline btn-sm btn-icon" onclick="viewMalpracticeLog(${JSON.stringify(a.malpracticeLog||[]).replace(/"/g,'&quot;')}, '${a.studentName||a.usn}')" title="View events">📋 Log</button>`
+              : `<span style="color:var(--text3);font-size:12px;">—</span>`}
+          </td>
+        </tr>`;
       }).join('');
     }
 
