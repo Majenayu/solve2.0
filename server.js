@@ -11,13 +11,13 @@ const https = require('https');
 const { OAuth2Client } = require('google-auth-library');
 
 // ─── AI HELPER — Gemini 2.0 Flash (primary) + OpenRouter (fallback) ─────────
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyAF29JUbKPg6kfr-ZdaMxXpsnIU-1yRQ4c';
+const GEMINI_API_KEY = "AIzaSyC4qQscxqWR6LuMIw7Dd-_nHrl5R-UMYuQ";
+const OPENROUTER_KEY = "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";
 
 function geminiRequest(systemPrompt, userMessages, maxTokens) {
   return new Promise((resolve, reject) => {
     // Build URL fresh each call so env var changes take effect
-    const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY;
-    // Build Gemini contents array from history
+    const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=' + GEMINI_API_KEY;      // Build Gemini contents array from history
     const contents = [];
     for (const m of userMessages) {
       contents.push({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] });
@@ -53,36 +53,55 @@ function geminiRequest(systemPrompt, userMessages, maxTokens) {
   });
 }
 
-function openRouterRequest(body) {
-  const OR_KEY = process.env.OPENROUTER_KEY || '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';
+function openRouterRequest(systemPrompt, messages) {
   return new Promise((resolve, reject) => {
-    const payload = JSON.stringify(body);
+    const payload = JSON.stringify({
+      model: "openai/gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...messages
+      ],
+      max_tokens: 800,
+      temperature: 0.7
+    });
+
     const options = {
-      hostname: 'openrouter.ai',
-      path: '/api/v1/chat/completions',
-      method: 'POST',
+      hostname: "openrouter.ai",
+      path: "/api/v1/chat/completions",
+      method: "POST",
       headers: {
-        'Authorization': 'Bearer ' + OR_KEY,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://solve-q7hx.onrender.com',
-        'X-Title': 'PlacementPro',
-        'Content-Length': Buffer.byteLength(payload)
+        "Authorization": "Bearer " + OPENROUTER_KEY,   // ✅ uses constant
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(payload)
       }
     };
-    const req = https.request(options, (resp) => {
-      let data = '';
-      resp.on('data', chunk => data += chunk);
-      resp.on('end', () => {
-        try { resolve(JSON.parse(data)); }
-        catch (e) { reject(new Error('OpenRouter JSON error: ' + data.substring(0, 200))); }
+
+    // rest stays same...
+
+    const req = https.request(options, res => {
+      let data = "";
+      res.on("data", chunk => data += chunk);
+      res.on("end", () => {
+        try {
+          const parsed = JSON.parse(data);
+          resolve(parsed);
+        } catch (e) {
+          reject(new Error("OpenRouter JSON parse error: " + data.slice(0, 200)));
+        }
       });
     });
-    req.on('error', reject);
-    req.setTimeout(60000, () => { req.destroy(); reject(new Error('OpenRouter timeout')); });
+
+    req.on("error", reject);
+    req.setTimeout(30000, () => {
+      req.destroy();
+      reject(new Error("OpenRouter timeout"));
+    });
+
     req.write(payload);
     req.end();
   });
 }
+
 
 async function askAI(systemPrompt, messages) {
   // 1️⃣ Try Gemini first
@@ -101,15 +120,7 @@ async function askAI(systemPrompt, messages) {
   // 2️⃣ Fallback to OpenRouter
   try {
     console.log("🔁 Falling back to OpenRouter...");
-    const orResp = await openRouterRequest({
-      model: "openai/gpt-4o-mini",
-      messages: [
-        { role: "system", content: systemPrompt },
-        ...messages
-      ],
-      max_tokens: 800,
-      temperature: 0.7
-    });
+    const orResp = await openRouterRequest(systemPrompt, messages);
 
     const text = orResp?.choices?.[0]?.message?.content;
     if (!text) throw new Error("Empty OpenRouter response");
@@ -1160,11 +1171,11 @@ app.post('/api/resume/compare', async (req, res) => {
   const { resume_data, company, role } = req.body;
   const pkg = req.body.package || '';
   const prompt = `You are a senior technical recruiter with 10+ years of experience at top tech companies.
-A student wants to work at: ${company} | Role: ${role} | Package: ${pkg}
-Student profile: CGPA ${resume_data.cgpa || 'N/A'}, Skills: ${(resume_data.skills || []).join(', ')}, Projects: ${(resume_data.projects || []).length}, Internships: ${(resume_data.internships || []).length}, Achievements: ${(resume_data.achievements || []).length}
+  A student wants to work at: ${company} | Role: ${role} | Package: ${pkg}
+  Student profile: CGPA ${resume_data.cgpa || 'N/A'}, Skills: ${(resume_data.skills || []).join(', ')}, Projects: ${(resume_data.projects || []).length}, Internships: ${(resume_data.internships || []).length}, Achievements: ${(resume_data.achievements || []).length}
 
-Generate a realistic benchmark comparison. Respond ONLY with valid JSON (no markdown):
-{"benchmark":{"summary":"string","cgpa":"string","key_skills":["skill1","skill2"],"projects_count":3,"internships":"string","certifications":["cert1"]},"match_score":72,"strengths":["strength1","strength2","strength3"],"gaps":["gap1","gap2","gap3"],"action_items":["action1","action2","action3"],"verdict":"string"}`;
+  Generate a realistic benchmark comparison. Respond ONLY with valid JSON (no markdown):
+  {"benchmark":{"summary":"string","cgpa":"string","key_skills":["skill1","skill2"],"projects_count":3,"internships":"string","certifications":["cert1"]},"match_score":72,"strengths":["strength1","strength2","strength3"],"gaps":["gap1","gap2","gap3"],"action_items":["action1","action2","action3"],"verdict":"string"}`;
   try {
     const raw = await askAI('You are a technical recruiter. Respond only with valid JSON, no markdown formatting.', [{ role: 'user', content: prompt }]);
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
