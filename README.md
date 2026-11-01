@@ -1,100 +1,57 @@
-# PlacementPro – Campus Career Suite
+# PlacementPro
 
-An integrated placement management web app for colleges — connecting TPO admins, students, and alumni on one platform.
+A Node.js/Express campus career suite for students and alumni. The application serves dashboard pages, uses MongoDB for placement data, supports CSV ingestion, file uploads, sessions, and Google/Gemini-related integration.
 
-🔗 **Live:** [solve-q7hx.onrender.com](https://solve-q7hx.onrender.com)  
-📦 **Repo:** [github.com/Majenayu/Solve](https://github.com/Majenayu/Solve)
+## Architecture
 
----
+```mermaid
+flowchart LR
+  Browser[Student/alumni dashboards] --> Express[server.js]
+  Express --> Session[express-session]
+  Express --> Mongo[(MongoDB/Mongoose)]
+  Express --> CSV[csv-parser import]
+  Express --> Files[Multer uploads]
+  Express --> Google[Google auth/AI integration]
+```
 
-## Topics
-
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [Pages](#pages)
-- [API Routes](#api-routes)
-- [Deploy](#deploy)
-
----
-
-## Tech Stack
-
-| | |
-|---|---|
-| Backend | Node.js + Express |
-| Database | MongoDB Atlas |
-| Auth | Google OAuth 2.0 + Sessions |
-| AI | Gemini 2.0 Flash |
-| Frontend | HTML / CSS / JS |
-| Hosting | Render.com |
-
----
-
-## Getting Started
+## Setup
 
 ```bash
-git clone https://github.com/Majenayu/Solve.git
-cd Solve
-npm install
-cp .env.example .env   # fill in your values
-npm run dev            # http://localhost:3000
+npm ci
+cp .env.example .env
+npm start
+# development (with nodemon installed)
+npm run dev
 ```
 
-**Default admin login:** `username: a` / `password: a`
+Configure MongoDB, session secret, port, and any Google/AI credentials through environment variables. Do not use credentials embedded in deployment configuration.
 
----
+## Workflow
 
-## Environment Variables
+The browser selects student, alumni, or administrative dashboards. Express authenticates requests, reads/writes placement records with Mongoose, imports structured CSV data, and handles document uploads. The HTML pages are the current client surface; route behavior lives in `server.js`.
 
-```env
-MONGO_URI=mongodb+srv://...
-SESSION_SECRET=your-secret
-PORT=3000
-GEMINI_API_KEY=your-key
-```
+## Deployment
 
----
+Run `node server.js` on a Node.js 18+ service with a managed MongoDB database and persistent/controlled upload storage. Put the service behind HTTPS and configure secure session cookies.
 
-## Pages
+## Testing and limitations
 
-| URL | Description |
-|-----|-------------|
-| `/` | Login (Admin & Student) |
-| `/dashboard` | Admin / TPO panel |
-| `/student` | Student portal |
-| `/alumni-login` | Alumni register / login |
-| `/alumni` | Alumni dashboard |
-| `/alumni-connect` | Alumni group connect |
+No automated test command is configured. Test role boundaries, session expiry, CSV validation, upload limits, and database failures before handling real student data.
 
----
+## Security and operations
 
-## API Routes
+- Keep credentials, database URLs, OAuth tokens, API keys, and signing secrets in environment variables; never commit them.
+- Validate and constrain uploaded files and user input at the server boundary, and enable HTTPS in production.
+- Review dependency updates and rotate any credential that has appeared in repository history.
 
-**Auth** — `/api/auth/login` · `/api/auth/logout` · `/api/auth/google` · `/api/auth/google-alumni`
+## Testing
 
-**Students** — `/api/students` · `/api/students/import` · `/api/students/eligible` · `/api/students/me/:usn`
+The repository currently has no comprehensive automated test suite unless noted above. Before production changes, add tests for authentication/authorization, validation failures, persistence errors, and the primary user workflow.
 
-**Drives** — `/api/drives` · `/api/drives/:id/notify` · `/api/drives/:id/shortlist` · `/api/drives/student/:usn`
+## Limitations and roadmap
 
-**Assessments** — `/api/assessments` · `/api/assessments/:id/take` · `/api/assessments/:id/submit`
+This is an actively evolving project. Production hardening, observability, rate limiting, backup/retention policy, and accessibility/performance validation should be completed before handling sensitive or high-volume workloads.
 
-**Notifications** — `/api/notifications/:usn` · `/api/notifications/:id/read`
+## License
 
-**Alumni** — `/api/alumni/me` · `/api/alumni/groups` · `/api/alumni/private` · `/api/alumni/list`
-
-**AI** — `/api/quiz/generate` · `/api/chat` · `/api/resume/compare`
-
-**Dashboard** — `/api/dashboard/stats`
-
----
-
-## Deploy
-
-Configured for Render via `render.yaml`. Push to GitHub — Render auto-deploys.
-
-```bash
-git add .
-git commit -m "update"
-git push origin main
-```
+See the repository license file and package metadata for the authoritative terms.
