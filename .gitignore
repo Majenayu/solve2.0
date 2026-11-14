@@ -3,3 +3,7 @@ uploads/
 .env
 *.log
 .DS_Store
+
+.env.*
+!.env.example
+coverage/
